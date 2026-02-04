@@ -1,28 +1,20 @@
 import express from "express";
-import { ENV } from "./lib/env.js";
-import path from "path";
+import cors from "cors";
+import "./lib/env.js";
+import {connectDB} from "./lib/db.js";
+import authRoutes from "./routes/authRoutes.js";
 
 const app = express();
 
-const __dirname = path.resolve();
+app.use(cors());
 
-app.get("/health",(req,res)=>{
-    res.status(200).json({
-        msg:"api is up and running"
-    });
+app.use(express.json());
+app.use("/api/auth",authRoutes);
+
+app.get("/",(req,res)=>{
+    res.send("MockMate Backend Running");
 });
-app.get("/books",(req,res)=>{
-    res.status(200).json({
-        msg: "Success from books"
-    })
+connectDB();
+app.listen(5000,()=>{
+    console.log("Server started on port 5000");
 });
-
-//make our app ready for deployment
-if(ENV.NODE_ENV === "production"){
-    app.use(express.static(path.join(__dirname,"../frontend/dist")))
-
-    app.get("/{*any}",(req,res)=>{
-        res.sendFile(path.join(__dirname,"../frontend","dist","index.html"));
-    })
-}
-app.listen(ENV.PORT, ()=> console.log("Server is running on port 3000"));
