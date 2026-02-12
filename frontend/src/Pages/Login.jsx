@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import Input from "../Components/Input"
 import api from "../api/axios"
+import "./Login.css"
 
 function Login() {
   const [email, setEmail] = useState("")
@@ -22,27 +22,54 @@ function Login() {
     }
   }
 
-  return (
-    <div>
-      <h2>Login</h2>
+ return (
+  <div className="login-container">
+    <div className="login-wrapper">
 
-      <Input placeholder="Email" value={email}
-        onChange={(e) => setEmail(e.target.value)} />
+      <div className="login-brand">
+        <h1>
+          <span className="mock-dark">Mock</span>
+          <span className="mock-accent">Mate</span>
+        </h1>
+        <p>Practice Smarter. Perform Better.</p>
+      </div>
 
-      <br /><br />
+      <div className="login-form">
+        <input
+          className="login-input"
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
-      <Input type="password" placeholder="Password" value={password}
-        onChange={(e) => setPassword(e.target.value)} />
+        <input
+          className="login-input"
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
-      <br /><br />
+        <button
+          className="login-button"
+          onClick={handleLogin}
+        >
+          Login
+        </button>
+      </div>
 
-      <button onClick={handleLogin}>Login</button>
+      <div className="login-footer">
+        New here?{" "}
+        <Link to="/register" className="login-link">
+          Create account
+        </Link>
+      </div>
 
-      <p>
-        New user? <Link to="/register">Register here</Link>
-      </p>
     </div>
-  )
+  </div>
+)
+ 
 }
 
 export default Login

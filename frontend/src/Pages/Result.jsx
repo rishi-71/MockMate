@@ -1,9 +1,11 @@
-function Result() {
+import Layout from "../Layout/Layout"
+
+function Result({ theme, setTheme }) {
   return (
-    <div>
+    <Layout theme={theme} setTheme={setTheme}>
       <h2>Result</h2>
-      <p>Your quiz result will be shown here</p>
-    </div>
+      <p>Your results will appear here.</p>
+    </Layout>
   )
 }
 

@@ -1,9 +1,11 @@
-function Quiz() {
+import Layout from "../Layout/Layout"
+
+function Quiz({ theme, setTheme }) {
   return (
-    <div>
-      <h2>Quiz Page</h2>
-      <p>Quiz questions will appear here</p>
-    </div>
+    <Layout theme={theme} setTheme={setTheme}>
+      <h2>Quiz</h2>
+      <p>Start your quiz here.</p>
+    </Layout>
   )
 }
 

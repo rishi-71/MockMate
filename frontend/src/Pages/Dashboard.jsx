@@ -1,9 +1,11 @@
-function Dashboard() {
+import Layout from "../Layout/Layout"
+
+function Dashboard({ theme, setTheme }) {
   return (
-    <div>
+    <Layout theme={theme} setTheme={setTheme}>
       <h2>Dashboard</h2>
       <p>Welcome to MockMate 🚀</p>
-    </div>
+    </Layout>
   )
 }
 
