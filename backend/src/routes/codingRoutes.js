@@ -1,11 +1,13 @@
 import express from "express";
-import {getTopics,getQuestions,getHint} from "../controllers/codingController.js";
+import {getTopics,getQuestions,getHint, submitAttempt} from "../controllers/codingController.js";
 import {protect} from "../middleware/authMiddleware.js";
+
 
 const router = express.Router();
 
 router.get("/topics",protect,getTopics);
 router.get("/questions/:topicId",protect,getQuestions);
 router.post("/hint",protect,getHint);
+router.post("/submit", protect,submitAttempt);
 
 export default router;
