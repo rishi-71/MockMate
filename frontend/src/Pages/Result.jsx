@@ -1,12 +1,37 @@
-import Layout from "../Layout/Layout"
+import { useEffect, useState } from "react";
+import axios from "../api/axios";
 
-function Result({ theme, setTheme }) {
+const Result = () => {
+  const [results, setResults] = useState([]);
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    const fetchResults = async () => {
+      const res = await axios.get("/coding/results", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setResults(res.data);
+    };
+
+    fetchResults();
+  }, []);
+
   return (
-    <Layout theme={theme} setTheme={setTheme}>
-      <h2>Result</h2>
-      <p>Your results will appear here.</p>
-    </Layout>
-  )
-}
+    <div>
+      <h2>Your Progress</h2>
 
-export default Result
+      {results.map((r) => (
+        <div key={r._id} style={{ marginBottom: "15px" }}>
+          <strong>{r.question?.title}</strong>
+          <p>Status: {r.isCorrect ? "Correct" : "Wrong"}</p>
+          <p>Score: {r.score}</p>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default Result;

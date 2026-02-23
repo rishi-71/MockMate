@@ -1,75 +1,32 @@
-import { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
-import api from "../api/axios"
-import "./Login.css"
+import { useState, useContext } from "react";
+import axios from "../api/axios";
+import { AuthContext } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
-function Login() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const navigate = useNavigate()
+const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  async function handleLogin() {
-    try {
-      const res = await api.post("/login", {
-        email,
-        password
-      })
+  const handleLogin = async () => {
+    const res = await axios.post("/auth/login", {
+      email,
+      password,
+    });
 
-      console.log(res.data)
-      navigate("/dashboard")
-    } catch (err) {
-      alert("Login failed")
-    }
-  }
+    login(res.data);
+    navigate("/dashboard");
+  };
 
- return (
-  <div className="login-container">
-    <div className="login-wrapper">
-
-      <div className="login-brand">
-        <h1>
-          <span className="mock-dark">Mock</span>
-          <span className="mock-accent">Mate</span>
-        </h1>
-        <p>Practice Smarter. Perform Better.</p>
-      </div>
-
-      <div className="login-form">
-        <input
-          className="login-input"
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-
-        <input
-          className="login-input"
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-
-        <button
-          className="login-button"
-          onClick={handleLogin}
-        >
-          Login
-        </button>
-      </div>
-
-      <div className="login-footer">
-        New here?{" "}
-        <Link to="/register" className="login-link">
-          Create account
-        </Link>
-      </div>
-
+  return (
+    <div>
+      <h2>Login</h2>
+      <input onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
+      <input onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
+      <button onClick={handleLogin}>Login</button>
     </div>
-  </div>
-)
- 
-}
+  );
+};
 
-export default Login
+export default Login;

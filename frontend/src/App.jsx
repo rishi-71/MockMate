@@ -34,6 +34,8 @@ function App() {
       <Route path="/dashboard" element={<Dashboard setTheme={setTheme} theme={theme} />} />
       <Route path="/quiz" element={<Quiz setTheme={setTheme} theme={theme} />} />
       <Route path="/result" element={<Result setTheme={setTheme} theme={theme} />} />
+      <Route path="/quiz/:topicId" element={<Quiz />} />
+      <Route path="/results" element={<Result />} />
     </Routes>
   )
 }
