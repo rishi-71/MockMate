@@ -20,17 +20,19 @@ const Result = () => {
   }, []);
 
   return (
-    <div>
-      <h2>Your Progress</h2>
+<div className="container">
+  <h2 className="title">Your Progress</h2>
 
-      {results.map((r) => (
-        <div key={r._id} style={{ marginBottom: "15px" }}>
-          <strong>{r.question?.title}</strong>
-          <p>Status: {r.isCorrect ? "Correct" : "Wrong"}</p>
-          <p>Score: {r.score}</p>
-        </div>
-      ))}
+  {results.map((r) => (
+    <div key={r._id} className="result-item">
+      <strong>{r.question?.title}</strong>
+      <p className={r.isCorrect ? "correct" : "wrong"}>
+        {r.isCorrect ? "Correct" : "Wrong"}
+      </p>
+      <p>Score: {r.score}</p>
     </div>
+  ))}
+</div>
   );
 };
 

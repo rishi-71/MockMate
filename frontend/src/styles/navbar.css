@@ -1,0 +1,37 @@
+.navbar {
+  height: 60px;
+  background: #111;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30px;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-link {
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: 0.2s;
+}
+
+.nav-link:hover {
+  color: var(--accent);
+}
+
+.user-name {
+  color: var(--text-primary);
+  font-weight: 500;
+}

@@ -1,0 +1,38 @@
+.question-card {
+  margin-bottom: 25px;
+  transition: 0.2s ease;
+}
+
+.question-card:hover {
+  border-color: var(--accent);
+}
+
+.question-title {
+  margin-bottom: 5px;
+}
+
+.question-desc {
+  color: var(--text-muted);
+  margin-bottom: 15px;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
+.hint-box {
+  margin-top: 15px;
+  background: #222;
+  padding: 12px;
+  border-left: 3px solid var(--accent);
+  border-radius: 4px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.success-msg {
+  margin-top: 20px;
+  color: #4caf50;
+  font-weight: 500;
+}

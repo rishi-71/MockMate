@@ -1,43 +1,88 @@
-import { useEffect, useState } from "react"
-import { Routes, Route } from "react-router-dom"
-
-import Login from "./Pages/Login"
-import Register from "./Pages/Register"
-import Dashboard from "./Pages/Dashboard"
-import Quiz from "./Pages/Quiz"
-import Result from "./Pages/Result"
+import { useEffect, useState } from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
+import PageWrapper from "./components/PageWrapper";
+import Navbar from "./components/Navbar";
+import Login from "./Pages/Login";
+import Register from "./Pages/Register";
+import Dashboard from "./Pages/Dashboard";
+import Quiz from "./Pages/Quiz";
+import Result from "./Pages/Result";
 
 function App() {
-  const [theme, setTheme] = useState("light")
+  const [theme, setTheme] = useState("dark");
+  const location = useLocation();
 
-  // Load saved theme on first load
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme")
-    if (savedTheme) {
-      setTheme(savedTheme)
-      document.documentElement.setAttribute("data-theme", savedTheme)
-    } else {
-      document.documentElement.setAttribute("data-theme", "light")
-    }
-  }, [])
+  // Hide navbar on auth pages
+  const hideNavbar =
+    location.pathname === "/" || location.pathname === "/register";
 
-  // Update theme when changed
+  // Load saved theme
   useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme)
-    localStorage.setItem("theme", theme)
-  }, [theme])
+    const savedTheme = localStorage.getItem("theme");
+    const initialTheme = savedTheme || "dark";
+
+    setTheme(initialTheme);
+    document.documentElement.setAttribute("data-theme", initialTheme);
+  }, []);
+
+  // Update theme
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
 
   return (
-    <Routes>
-      <Route path="/" element={<Login setTheme={setTheme} theme={theme} />} />
-      <Route path="/register" element={<Register setTheme={setTheme} theme={theme} />} />
-      <Route path="/dashboard" element={<Dashboard setTheme={setTheme} theme={theme} />} />
-      <Route path="/quiz" element={<Quiz setTheme={setTheme} theme={theme} />} />
-      <Route path="/result" element={<Result setTheme={setTheme} theme={theme} />} />
-      <Route path="/quiz/:topicId" element={<Quiz />} />
-      <Route path="/results" element={<Result />} />
-    </Routes>
-  )
+    <>
+            {!hideNavbar && <Navbar />}
+
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          <Route
+            path="/"
+            element={
+              <PageWrapper>
+                <Login setTheme={setTheme} theme={theme} />
+              </PageWrapper>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <PageWrapper>
+                <Register setTheme={setTheme} theme={theme} />
+              </PageWrapper>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <PageWrapper>
+                <Dashboard setTheme={setTheme} theme={theme} />
+              </PageWrapper>
+            }
+          />
+          <Route
+            path="/quiz/:topicId"
+            element={
+              <PageWrapper>
+                <Quiz />
+              </PageWrapper>
+            }
+          />
+          <Route
+            path="/results"
+            element={
+              <PageWrapper>
+                <Result />
+              </PageWrapper>
+            }
+          />
+        </Routes>
+      </AnimatePresence>
+
+    </>
+  );
 }
 
-export default App
+export default App;

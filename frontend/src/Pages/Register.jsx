@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import Input from "../Components/Input"
+import Input from "../components/Input"
 import api from "../api/axios"
 
 function Register() {

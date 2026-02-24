@@ -1,0 +1,12 @@
+.result-item {
+  padding: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.correct {
+  color: #4caf50;
+}
+
+.wrong {
+  color: #f44336;
+}

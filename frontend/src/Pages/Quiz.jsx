@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "../api/axios";
+import "../styles/quiz.css";
 
 const Quiz = () => {
   const { topicId } = useParams();
@@ -22,7 +23,7 @@ const Quiz = () => {
 
         setQuestions(res.data);
       } catch (err) {
-        console.error("Error fetching questions:", err);
+        console.error(err);
       }
     };
 
@@ -48,7 +49,7 @@ const Quiz = () => {
         [questionId]: res.data.hint,
       }));
     } catch (err) {
-      console.error("Hint error:", err);
+      console.error(err);
     } finally {
       setLoadingHintId(null);
     }
@@ -60,7 +61,7 @@ const Quiz = () => {
         "/coding/submit",
         {
           questionId,
-          isCorrect: true, // currently static
+          isCorrect: true,
         },
         {
           headers: {
@@ -72,61 +73,45 @@ const Quiz = () => {
       setMessage("✅ Attempt saved successfully!");
       setTimeout(() => setMessage(""), 2000);
     } catch (err) {
-      console.error("Submit error:", err);
+      console.error(err);
     }
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Questions</h2>
+    <div className="container">
+      <h2 className="title">Questions</h2>
 
       {questions.map((q) => (
-        <div
-          key={q._id}
-          style={{
-            marginBottom: "25px",
-            padding: "15px",
-            border: "1px solid #ccc",
-            borderRadius: "6px",
-          }}
-        >
-          <h4>{q.title}</h4>
-          <p>{q.description}</p>
+        <div key={q._id} className="card question-card">
+          <h4 className="question-title">{q.title}</h4>
+          <p className="question-desc">{q.description}</p>
 
-          <button
-            onClick={() => getHint(q._id)}
-            disabled={loadingHintId === q._id}
-            style={{ marginRight: "10px" }}
-          >
-            {loadingHintId === q._id ? "Generating..." : "Get Hint"}
-          </button>
-
-          <button onClick={() => submitAnswer(q._id)}>
-            Mark as Solved
-          </button>
-
-          {/* Show hint only for that question */}
-          {hints[q._id] && (
-            <div
-              style={{
-                marginTop: "10px",
-                color: "blue",
-                background: "#f3f3f3",
-                padding: "8px",
-                borderRadius: "4px",
-              }}
+          <div className="button-group">
+            <button
+              className="btn"
+              onClick={() => getHint(q._id)}
+              disabled={loadingHintId === q._id}
             >
+              {loadingHintId === q._id ? "Generating..." : "Get Hint"}
+            </button>
+
+            <button
+              className="btn btn-secondary"
+              onClick={() => submitAnswer(q._id)}
+            >
+              Mark as Solved
+            </button>
+          </div>
+
+          {hints[q._id] && (
+            <div className="hint-box">
               <strong>Hint:</strong> {hints[q._id]}
             </div>
           )}
         </div>
       ))}
 
-      {message && (
-        <div style={{ marginTop: "20px", color: "green" }}>
-          {message}
-        </div>
-      )}
+      {message && <div className="success-msg">{message}</div>}
     </div>
   );
 };

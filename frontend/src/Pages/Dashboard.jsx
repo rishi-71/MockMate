@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "../api/axios";
 import { useNavigate } from "react-router-dom";
+import "../styles/dashboard.css";
 
 const Dashboard = () => {
   const [topics, setTopics] = useState([]);
@@ -23,26 +24,19 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div>
-      <h2>Topics</h2>
-      {topics.map((t) => (
-        <div
-          key={t._id}
-          onClick={() => navigate(`/quiz/${t._id}`)}
-          style={{
-            cursor: "pointer",
-            margin: "10px 0",
-            padding: "8px",
-            border: "1px solid black"
-          }}
-        >
-          {t.name}
-        </div>
-      ))}
-      <button onClick={() => navigate("/results")}>
-  View Progress
-</button>
+   <div className="container">
+  <h2 className="title">Topics</h2>
+
+  {topics.map((t) => (
+    <div
+      key={t._id}
+      className="topic-item"
+      onClick={() => navigate(`/quiz/${t._id}`)}
+    >
+      {t.name}
     </div>
+  ))}
+</div>
   );
 };
 
