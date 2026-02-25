@@ -8,6 +8,9 @@ import Register from "./Pages/Register";
 import Dashboard from "./Pages/Dashboard";
 import Quiz from "./Pages/Quiz";
 import Result from "./Pages/Result";
+import CodingHome from "./Pages/CodingHome";
+import TheoryQuiz from "./Pages/TheoryQuiz";
+import TheoryHome from "./Pages/CodingHome";
 
 function App() {
   const [theme, setTheme] = useState("dark");
@@ -62,14 +65,22 @@ function App() {
               </PageWrapper>
             }
           />
+          <Route path="/coding" element={<PageWrapper><CodingHome/></PageWrapper>}/>
           <Route
-            path="/quiz/:topicId"
+            path="/coding/quiz/:topicId"
             element={
               <PageWrapper>
                 <Quiz />
               </PageWrapper>
             }
           />
+          <Route path="/theory" element={<PageWrapper><TheoryHome/>
+          </PageWrapper>}/>
+          <Route path="/theory/quiz/:modulateId" element={
+              <PageWrapper>
+                <TheoryQuiz />
+              </PageWrapper>
+            }/>
           <Route
             path="/results"
             element={

@@ -5,38 +5,82 @@ import "../styles/dashboard.css";
 
 const Dashboard = () => {
   const [topics, setTopics] = useState([]);
+  const [results, setResults] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchTopics = async () => {
-      const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
-      const res = await axios.get("/coding/topics", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+    const fetchData = async () => {
+      try {
+        const [topicsRes, resultsRes] = await Promise.all([
+          axios.get("/coding/topics", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          axios.get("/coding/results", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+        ]);
 
-      setTopics(res.data);
+        setTopics(topicsRes.data);
+        setResults(resultsRes.data);
+      } catch (err) {
+        console.error("Dashboard fetch error:", err);
+      }
     };
 
-    fetchTopics();
+    fetchData();
   }, []);
 
-  return (
-   <div className="container">
-  <h2 className="title">Topics</h2>
+  // 📊 Stats calculation
+  const total = results.length;
+  const correct = results.filter((r) => r.isCorrect).length;
+  const accuracy = total ? Math.round((correct / total) * 100) : 0;
 
-  {topics.map((t) => (
-    <div
-      key={t._id}
-      className="topic-item"
-      onClick={() => navigate(`/quiz/${t._id}`)}
-    >
-      {t.name}
+  return (
+    <div className="container">
+      <h2 className="title">Dashboard</h2>
+
+      {/* 📊 Stats Section */}
+      <div className="stats-grid">
+        <div className="card stat-card">
+          <h3>{total}</h3>
+          <p>Total Attempts</p>
+        </div>
+
+        <div className="card stat-card">
+          <h3>{correct}</h3>
+          <p>Correct Answers</p>
+        </div>
+
+        <div className="card stat-card">
+          <h3>{accuracy}%</h3>
+          <p>Accuracy</p>
+        </div>
+      </div>
+
+      <h2 className="title">Practice Sections</h2>
+
+      {/* 💻 Coding */}
+      <div
+        className="card stat-card"
+        onClick={() => navigate("/coding")}
+        style={{ cursor: "pointer" }}
+      >
+        <h3>💻 Coding Practice</h3>
+        <p>Solve DSA & Programming Problems</p>
+      </div>
+
+      {/* 📘 Theory */}
+      <div
+        className="card stat-card"
+        onClick={() => navigate("/theory")}
+        style={{ cursor: "pointer" }}
+      >
+        <h3>📘 Theory Practice</h3>
+        <p>Module-wise Quiz & MCQs</p>
+      </div>
     </div>
-  ))}
-</div>
   );
 };
 

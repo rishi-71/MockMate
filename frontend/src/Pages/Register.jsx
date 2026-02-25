@@ -11,7 +11,7 @@ function Register() {
 
   async function handleRegister() {
     try {
-      await api.post("/register", {
+      await api.post("/auth/register", {
         name,
         email,
         password
