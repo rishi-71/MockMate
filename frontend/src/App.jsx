@@ -6,11 +6,12 @@ import Navbar from "./components/Navbar";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
 import Dashboard from "./Pages/Dashboard";
-import Quiz from "./Pages/Quiz";
+import Quiz from "./Pages/Theory";
 import Result from "./Pages/Result";
 import CodingHome from "./Pages/CodingHome";
 import TheoryQuiz from "./Pages/TheoryQuiz";
 import TheoryHome from "./Pages/CodingHome";
+import CodingPractice from "./Pages/CodingPractice";
 
 function App() {
   const [theme, setTheme] = useState("dark");
@@ -70,7 +71,7 @@ function App() {
             path="/coding/quiz/:topicId"
             element={
               <PageWrapper>
-                <Quiz />
+                <CodingPractice />
               </PageWrapper>
             }
           />
