@@ -22,7 +22,28 @@ const CodingHome = () => {
     };
 
     fetchTopics();
-  }, []);
+  }, [token]);
+
+  const handleGenerateQuestion = async (topicName) => {
+    try {
+      const res = await axios.post(
+        "/coding/generate",
+        { topic: topicName },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      // Save question in localStorage (temporary)
+      localStorage.setItem("currentCodingQuestion", JSON.stringify(res.data));
+
+      // Navigate to coding practice page
+      navigate("/coding/practice");
+
+    } catch (err) {
+      console.error("Generate Question Error:", err);
+    }
+  };
 
   return (
     <div className="container">
@@ -32,7 +53,7 @@ const CodingHome = () => {
         <div
           key={t._id}
           className="topic-item"
-          onClick={() => navigate(`/coding/quiz/${t._id}`)}
+          onClick={() => handleGenerateQuestion(t.name)}
         >
           {t.name}
         </div>

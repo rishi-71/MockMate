@@ -90,9 +90,11 @@ function App() {
               </PageWrapper>
             }
           />
+          <Route path="/coding/practice" element={<PageWrapper><CodingPractice /></PageWrapper>}
+           />
         </Routes>
       </AnimatePresence>
-
+     
     </>
   );
 }

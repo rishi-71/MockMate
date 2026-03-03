@@ -7,6 +7,10 @@ const questionSchema = new mongoose.Schema({
     title:String,
     description:String,
     difficulty:String,
+    testCases:[{
+        input:String,
+        expectedOutput:String,
+    }]
 });
 
 export default mongoose.model("Question",questionSchema);
