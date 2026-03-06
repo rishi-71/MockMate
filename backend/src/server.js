@@ -6,6 +6,7 @@ import authRoutes from "./routes/authRoutes.js";
 import codingRoutes from "./routes/codingRoutes.js";
 import theoryRoutes from "./routes/theoryRoutes.js";
 
+
 const app = express();
 
 app.use(cors());

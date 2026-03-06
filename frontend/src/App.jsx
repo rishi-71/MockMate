@@ -39,7 +39,7 @@ function App() {
 
   return (
     <>
-            {!hideNavbar && <Navbar />}
+      {!hideNavbar && <Navbar />}
 
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
@@ -51,7 +51,7 @@ function App() {
               </PageWrapper>
             }
           />
-           <Route
+          <Route
             path="/login"
             element={
               <PageWrapper>
@@ -75,7 +75,14 @@ function App() {
               </PageWrapper>
             }
           />
-          <Route path="/coding" element={<PageWrapper><CodingHome/></PageWrapper>}/>
+          <Route
+            path="/coding"
+            element={
+              <PageWrapper>
+                <CodingHome />
+              </PageWrapper>
+            }
+          />
           <Route
             path="/coding/quiz/:topicId"
             element={
@@ -84,13 +91,22 @@ function App() {
               </PageWrapper>
             }
           />
-          <Route path="/theory" element={<PageWrapper><TheoryHome/>
-          </PageWrapper>}/>
-          <Route path="/theory/quiz/:modulateId" element={
+          <Route
+            path="/theory"
+            element={
               <PageWrapper>
                 <TheoryQuiz />
               </PageWrapper>
-            }/>
+            }
+          />
+          <Route
+            path="/theory/quiz/:modulateId"
+            element={
+              <PageWrapper>
+                <TheoryQuiz />
+              </PageWrapper>
+            }
+          />
           <Route
             path="/results"
             element={
@@ -99,11 +115,16 @@ function App() {
               </PageWrapper>
             }
           />
-          <Route path="/coding/practice" element={<PageWrapper><CodingPractice /></PageWrapper>}
-           />
+          <Route
+            path="/coding/practice"
+            element={
+              <PageWrapper>
+                <CodingPractice />
+              </PageWrapper>
+            }
+          />
         </Routes>
       </AnimatePresence>
-     
     </>
   );
 }

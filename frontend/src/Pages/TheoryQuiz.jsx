@@ -1,98 +1,135 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "../api/axios";
-import { useParams } from "react-router-dom";
+import "../styles/theory.css";
 
 const TheoryQuiz = () => {
-  const { moduleId } = useParams();
+  const [syllabus, setSyllabus] = useState("");
   const [questions, setQuestions] = useState([]);
-  const [answers, setAnswers] = useState([]);
-  const [result, setResult] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [answers, setAnswers] = useState({});
+  const [file, setFile] = useState(null);
+  const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
 
-  useEffect(() => {
-    const fetchQuiz = async () => {
-      try {
-        const res = await axios.post(
-          "/theory/generate",
-          { moduleName: `Module ${moduleId}` },
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+  const generateQuiz = async () => {
+    try {
+      const res = await axios.post(
+        "/theory/generate",
+        { syllabus },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
 
-        setQuestions(res.data.questions);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
+      setQuestions(res.data.questions);
+      setAnswers({});
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleOptionSelect = (index, option) => {
+    setAnswers({
+      ...answers,
+      [index]: option,
+    });
+  };
+
+  const submitQuiz = async () => {
+    const formattedQuestions = questions.map((q, i) => ({
+      question: q.question,
+      options: q.options,
+      correctAnswer: q.answer,
+      userAnswer: answers[i],
+    }));
+
+    try {
+      const res = await axios.post(
+        "/theory/submit",
+        { questions: formattedQuestions },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+
+      navigate("/results", {
+        state: res.data,
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const generateFromFile = async () => {
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const res = await axios.post(
+    "/theory/generate-file",
+    formData,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
       }
-    };
+    }
+  );
 
-    fetchQuiz();
-  }, []);
-
-  const handleSelect = (qIndex, option) => {
-    const updated = [...answers];
-    updated[qIndex] = option;
-    setAnswers(updated);
-  };
-
-  const handleSubmit = async () => {
-    const res = await axios.post(
-      "/theory/submit",
-      { answers, questions },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-
-    setResult(res.data);
-  };
-
-  if (loading) return <div className="container">Generating Quiz...</div>;
+  setQuestions(res.data.questions);
+};
 
   return (
-    <div className="container">
-      <h2>Theory Quiz</h2>
+    <div className="quiz-container">
+      <h2 className="quiz-title">Theory Quiz Generator</h2>
+
+      <input
+        type="file"
+        accept=".pdf,image/*"
+        onChange={(e) => setFile(e.target.files[0])}
+      />
+
+      <textarea
+        className="syllabus-input"
+        placeholder="Paste syllabus here..."
+        value={syllabus}
+        onChange={(e) => setSyllabus(e.target.value)}
+      />
+
+      <button onClick={generateFromFile}>
+Generate From File
+</button>
+
+      <button className="generate-btn" onClick={generateQuiz}>
+        Generate Quiz
+      </button>
 
       {questions.map((q, i) => (
-        <div key={i} className="card">
-          <p><strong>{i + 1}. {q.question}</strong></p>
+        <div key={i} className="question-card">
+          <h3>
+            {i + 1}. {q.question}
+          </h3>
 
-          {q.options.map((opt, index) => (
-            <label key={index} style={{ display: "block", marginBottom: "5px" }}>
+          {q.options.map((option, idx) => (
+            <label key={idx} className="option-label">
               <input
                 type="radio"
-                name={`q-${i}`}
-                value={opt}
-                onChange={() => handleSelect(i, opt)}
+                name={`question-${i}`}
+                value={option}
+                checked={answers[i] === option}
+                onChange={() => handleOptionSelect(i, option)}
               />
-              {" "} {opt}
+
+              {option}
             </label>
           ))}
-
-          {result && (
-            <div style={{ marginTop: "10px", color: "#aaa" }}>
-              Correct Answer: {q.correctAnswer}
-              <br />
-              Explanation: {q.explanation}
-            </div>
-          )}
         </div>
       ))}
 
-      {!result && (
-        <button className="btn" onClick={handleSubmit}>
+      {questions.length > 0 && (
+        <button className="submit-btn" onClick={submitQuiz}>
           Submit Quiz
         </button>
-      )}
-
-      {result && (
-        <div style={{ marginTop: "20px" }}>
-          <h3>
-            Score: {result.score} / {result.total}
-          </h3>
-        </div>
       )}
     </div>
   );
