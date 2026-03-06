@@ -1,0 +1,129 @@
+.landing{
+background:#0d0d0d;
+color:white;
+min-height:100vh;
+font-family:Arial;
+}
+
+/* NAVBAR */
+
+.landing-navbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 40px;
+border-bottom:1px solid #222;
+}
+
+.logo{
+color:#ff7a00;
+}
+
+.nav-links{
+display:flex;
+gap:25px;
+align-items:center;
+}
+
+.nav-links a{
+text-decoration:none;
+color:#ddd;
+}
+
+.nav-btn{
+background:#ff7a00;
+padding:8px 16px;
+border-radius:5px;
+color:white;
+}
+
+.nav-btn-outline{
+border:1px solid #ff7a00;
+padding:8px 16px;
+border-radius:5px;
+color:#ff7a00;
+}
+
+/* HERO */
+
+.hero{
+text-align:center;
+padding:120px 20px;
+}
+
+.hero h1{
+font-size:42px;
+margin-bottom:20px;
+}
+
+.hero p{
+color:#aaa;
+margin-bottom:30px;
+}
+
+.hero-buttons{
+display:flex;
+justify-content:center;
+gap:20px;
+}
+
+.btn-primary{
+background:#ff7a00;
+padding:12px 24px;
+border-radius:6px;
+color:white;
+text-decoration:none;
+}
+
+.btn-secondary{
+border:1px solid #ff7a00;
+padding:12px 24px;
+border-radius:6px;
+color:#ff7a00;
+text-decoration:none;
+}
+
+/* FEATURES */
+
+.features{
+padding:80px 40px;
+text-align:center;
+}
+
+.features-grid{
+margin-top:40px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:20px;
+}
+
+.feature-card{
+background:#111;
+padding:25px;
+border-radius:8px;
+border:1px solid #222;
+}
+
+/* ABOUT */
+
+.about{
+padding:80px 40px;
+text-align:center;
+color:#ccc;
+}
+
+/* CONTACT */
+
+.contact{
+padding:80px 40px;
+text-align:center;
+}
+
+/* FOOTER */
+
+.footer{
+text-align:center;
+padding:20px;
+border-top:1px solid #222;
+color:#777;
+}

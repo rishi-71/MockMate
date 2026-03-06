@@ -6,11 +6,13 @@ import Navbar from "./components/Navbar";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
 import Dashboard from "./Pages/Dashboard";
-import Quiz from "./Pages/Quiz";
+import Quiz from "./Pages/Theory";
 import Result from "./Pages/Result";
 import CodingHome from "./Pages/CodingHome";
 import TheoryQuiz from "./Pages/TheoryQuiz";
 import TheoryHome from "./Pages/CodingHome";
+import CodingPractice from "./Pages/CodingPractice";
+import Landing from "./Pages/Landing";
 
 function App() {
   const [theme, setTheme] = useState("dark");
@@ -45,6 +47,14 @@ function App() {
             path="/"
             element={
               <PageWrapper>
+                <Landing setTheme={setTheme} theme={theme} />
+              </PageWrapper>
+            }
+          />
+           <Route
+            path="/login"
+            element={
+              <PageWrapper>
                 <Login setTheme={setTheme} theme={theme} />
               </PageWrapper>
             }
@@ -70,7 +80,7 @@ function App() {
             path="/coding/quiz/:topicId"
             element={
               <PageWrapper>
-                <Quiz />
+                <CodingPractice />
               </PageWrapper>
             }
           />
@@ -89,9 +99,11 @@ function App() {
               </PageWrapper>
             }
           />
+          <Route path="/coding/practice" element={<PageWrapper><CodingPractice /></PageWrapper>}
+           />
         </Routes>
       </AnimatePresence>
-
+     
     </>
   );
 }
