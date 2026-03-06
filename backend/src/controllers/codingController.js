@@ -169,7 +169,7 @@ export const generateCodingQuestion = async (req, res) => {
   try {
     const { topic } = req.body;
 
- const prompt = `
+    const prompt = `
 Generate 1 C++ coding problem for topic: ${topic}
 
 Return STRICT valid JSON only in this exact structure:
@@ -193,21 +193,7 @@ IMPORTANT RULES:
 - No explanations
 - No markdown
 - No extra text outside JSON
-
-Ensure template works with Judge0.
-Ensure output exactly matches expectedOutput without extra spaces.
 `;
-
-const raw = data.candidates[0]?.content?.parts?.[0]?.text;
-
-let parsed;
-
-try {
-  parsed = JSON.parse(raw);
-} catch (err) {
-  console.error("Invalid JSON from AI:", raw);
-  return res.status(500).json({ message: "AI returned invalid JSON" });
-}
 
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
@@ -222,7 +208,7 @@ try {
 
     const data = await response.json();
 
-    // 🔴 If Gemini returned error
+    // If Gemini API fails
     if (!response.ok) {
       console.error("Gemini API Error:", data);
       return res.status(500).json({
@@ -230,7 +216,7 @@ try {
       });
     }
 
-    // 🔴 If candidates missing
+    // If no candidates returned
     if (!data.candidates || !data.candidates.length) {
       console.error("Invalid Gemini Response:", data);
       return res.status(500).json({
@@ -238,27 +224,37 @@ try {
       });
     }
 
-    const text = data.candidates[0]?.content?.parts?.[0]?.text;
+    const rawText = data.candidates[0]?.content?.parts?.[0]?.text;
 
-    if (!text) {
+    if (!rawText) {
       return res.status(500).json({
         message: "AI returned empty response",
       });
     }
 
     // Extract JSON safely
-    const jsonStart = text.indexOf("{");
-    const jsonEnd = text.lastIndexOf("}") + 1;
+    const jsonStart = rawText.indexOf("{");
+    const jsonEnd = rawText.lastIndexOf("}") + 1;
 
     if (jsonStart === -1 || jsonEnd === -1) {
+      console.error("AI Response:", rawText);
       return res.status(500).json({
         message: "AI did not return valid JSON",
       });
     }
 
-    const cleanJson = text.slice(jsonStart, jsonEnd);
+    const cleanJson = rawText.slice(jsonStart, jsonEnd);
 
-    const question = JSON.parse(cleanJson);
+    let question;
+
+    try {
+      question = JSON.parse(cleanJson);
+    } catch (err) {
+      console.error("Invalid JSON from AI:", cleanJson);
+      return res.status(500).json({
+        message: "AI returned invalid JSON",
+      });
+    }
 
     res.json(question);
 

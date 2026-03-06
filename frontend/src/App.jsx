@@ -12,6 +12,7 @@ import CodingHome from "./Pages/CodingHome";
 import TheoryQuiz from "./Pages/TheoryQuiz";
 import TheoryHome from "./Pages/CodingHome";
 import CodingPractice from "./Pages/CodingPractice";
+import Landing from "./Pages/Landing";
 
 function App() {
   const [theme, setTheme] = useState("dark");
@@ -44,6 +45,14 @@ function App() {
         <Routes location={location} key={location.pathname}>
           <Route
             path="/"
+            element={
+              <PageWrapper>
+                <Landing setTheme={setTheme} theme={theme} />
+              </PageWrapper>
+            }
+          />
+           <Route
+            path="/login"
             element={
               <PageWrapper>
                 <Login setTheme={setTheme} theme={theme} />
