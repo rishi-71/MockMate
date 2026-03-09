@@ -4,12 +4,15 @@ import "./lib/env.js";
 import {connectDB} from "./lib/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import codingRoutes from "./routes/codingRoutes.js";
+import theoryRoutes from "./routes/theoryRoutes.js";
+
 
 const app = express();
 
 app.use(cors());
 
 app.use(express.json());
+app.use("/api/theory",theoryRoutes);
 app.use("/api/auth",authRoutes);
 app.use("/api/coding",codingRoutes);
 

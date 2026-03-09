@@ -2,6 +2,7 @@ import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import Input from "../components/Input"
 import api from "../api/axios"
+import "../styles/register.css";
 
 function Register() {
   const [name, setName] = useState("")
@@ -10,46 +11,66 @@ function Register() {
   const navigate = useNavigate()
 
   async function handleRegister() {
-  try {
-    await api.post("/auth/register", {
-      name,
-      email,
-      password
-    })
 
-    navigate("/")
-  } catch (err) {
-    console.error(err)
-    alert("Registration failed")
+
+    try {
+      await api.post("/auth/register", {
+        name,
+        email,
+        password
+      })
+
+      navigate("/login");
+    } catch (err) {
+      alert("Registration failed");
+      console.log(err);
+    }
+
   }
 }
 
   return (
-    <div>
-      <h2>Register</h2>
+  <div className="register-container">
 
-      <Input placeholder="Name" value={name}
-        onChange={(e) => setName(e.target.value)} />
+    <div className="register-card">
 
-      <br /><br />
+      <h2 className="register-title">Register</h2>
 
-      <Input placeholder="Email" value={email}
-        onChange={(e) => setEmail(e.target.value)} />
+      <div className="register-form">
 
-      <br /><br />
+        <Input
+          placeholder="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
 
-      <Input type="password" placeholder="Password" value={password}
-        onChange={(e) => setPassword(e.target.value)} />
+        <Input
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
-      <br /><br />
+        <Input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
-      <button onClick={handleRegister}>Register</button>
+        <button className="register-btn" onClick={handleRegister}>
+          Register
+        </button>
 
-      <p>
-        Already have an account? <Link to="/">Login</Link>
-      </p>
+        <p className="register-footer">
+          Already have an account? <Link to="/login">Login</Link>
+        </p>
+
+      </div>
+
     </div>
-  )
+
+  </div>
+)
 }
 
 export default Register

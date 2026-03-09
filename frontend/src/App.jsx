@@ -6,8 +6,13 @@ import Navbar from "./components/Navbar";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
 import Dashboard from "./Pages/Dashboard";
-import Quiz from "./Pages/Quiz";
+import Quiz from "./Pages/Theory";
 import Result from "./Pages/Result";
+import CodingHome from "./Pages/CodingHome";
+import TheoryQuiz from "./Pages/TheoryQuiz";
+import TheoryHome from "./Pages/CodingHome";
+import CodingPractice from "./Pages/CodingPractice";
+import Landing from "./Pages/Landing";
 
 function App() {
   const [theme, setTheme] = useState("dark");
@@ -34,12 +39,20 @@ function App() {
 
   return (
     <>
-            {!hideNavbar && <Navbar />}
+      {!hideNavbar && <Navbar />}
 
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route
             path="/"
+            element={
+              <PageWrapper>
+                <Landing setTheme={setTheme} theme={theme} />
+              </PageWrapper>
+            }
+          />
+          <Route
+            path="/login"
             element={
               <PageWrapper>
                 <Login setTheme={setTheme} theme={theme} />
@@ -63,10 +76,34 @@ function App() {
             }
           />
           <Route
-            path="/quiz/:topicId"
+            path="/coding"
             element={
               <PageWrapper>
-                <Quiz />
+                <CodingHome />
+              </PageWrapper>
+            }
+          />
+          <Route
+            path="/coding/quiz/:topicId"
+            element={
+              <PageWrapper>
+                <CodingPractice />
+              </PageWrapper>
+            }
+          />
+          <Route
+            path="/theory"
+            element={
+              <PageWrapper>
+                <TheoryQuiz />
+              </PageWrapper>
+            }
+          />
+          <Route
+            path="/theory/quiz/:modulateId"
+            element={
+              <PageWrapper>
+                <TheoryQuiz />
               </PageWrapper>
             }
           />
@@ -78,9 +115,16 @@ function App() {
               </PageWrapper>
             }
           />
+          <Route
+            path="/coding/practice"
+            element={
+              <PageWrapper>
+                <CodingPractice />
+              </PageWrapper>
+            }
+          />
         </Routes>
       </AnimatePresence>
-
     </>
   );
 }

@@ -1,0 +1,59 @@
+.coding-container {
+  display: flex;
+  height: calc(100vh - 70px);
+}
+
+.problem-section {
+  width: 40%;
+  padding: 20px;
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+}
+
+.editor-section {
+  width: 60%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.editor-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.language-select {
+  background: #1a1a1a;
+  color: white;
+  border: 1px solid var(--border);
+  padding: 6px;
+  border-radius: 4px;
+}
+
+.hint-box {
+  margin-top: 15px;
+  background: #1e1e1e;
+  padding: 10px;
+  border-left: 3px solid var(--accent);
+  border-radius: 4px;
+}
+.input-box {
+  width: 100%;
+  min-height: 80px;
+  background: #1a1a1a;
+  color: white;
+  border: 1px solid #333;
+  padding: 8px;
+  margin-top: 5px;
+  border-radius: 5px;
+}
+
+.output-box {
+  margin-top: 15px;
+  background: #111;
+  padding: 10px;
+  border-left: 4px solid orange;
+  border-radius: 6px;
+  color: #00ff88;
+}

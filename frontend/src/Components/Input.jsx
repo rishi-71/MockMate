@@ -1,6 +1,6 @@
 function Input({ type = "text", placeholder, value, onChange }) {
   return (
-    <input
+    <input 
       type={type}
       placeholder={placeholder}
       value={value}
