@@ -10,18 +10,19 @@ function Register() {
   const navigate = useNavigate()
 
   async function handleRegister() {
-    try {
-      await api.post("/register", {
-        name,
-        email,
-        password
-      })
+  try {
+    await api.post("/auth/register", {
+      name,
+      email,
+      password
+    })
 
-      navigate("/")
-    } catch (err) {
-      alert("Registration failed")
-    }
+    navigate("/")
+  } catch (err) {
+    console.error(err)
+    alert("Registration failed")
   }
+}
 
   return (
     <div>
