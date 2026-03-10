@@ -1,42 +1,41 @@
-import { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
-import Input from "../components/Input"
-import api from "../api/axios"
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import Input from "../components/Input";
+import api from "../api/axios";
 import "../styles/register.css";
 
 function Register() {
 
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const navigate = useNavigate()
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   async function handleRegister() {
 
     // empty field validation
     if (!name || !email || !password) {
-      alert("All fields are required")
-      return
+      alert("All fields are required");
+      return;
     }
 
     try {
 
-      await api.post("/api/auth/register", {   // ✅ FIXED
+      await api.post("/api/auth/register", {
         name,
         email,
-        password
-      })
+        password,
+      });
 
-      alert("Registration successful")
-
+      alert("Registration successful");
       navigate("/login");
 
     } catch (err) {
 
       if (err.response?.data?.message) {
-        alert(err.response.data.message)
+        alert(err.response.data.message);
       } else {
-        alert("Registration failed")
+        alert("Registration failed");
       }
 
       console.log(err);
@@ -84,7 +83,7 @@ function Register() {
       </div>
 
     </div>
-  )
+  );
 }
 
-export default Register
+export default Register;
