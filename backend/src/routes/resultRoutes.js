@@ -1,7 +1,8 @@
 import express from "express";
 import { protect } from "../middleware/authMiddleware.js";
 import CodingResult from "../models/CodingResult.js";
-import Result from "../models/Result.js";
+// import Result from "../models/Result.js";
+import QuizResult from "../models/QuizResult.js";
 
 const router = express.Router();
 
