@@ -3,20 +3,24 @@ import "../styles/result.css";
 
 const Result = () => {
 
-  const location = useLocation();
-  const navigate = useNavigate();
-  const result = location.state;
+  async function handleRegister() {
 
-  if (!result) {
-    return (
-      <div className="result-container">
-        <h2>No result available</h2>
-        <button onClick={() => navigate("/dashboard")}>
-          Go Back
-        </button>
-      </div>
-    );
+
+    try {
+      await api.post("/auth/register", {
+        name,
+        email,
+        password
+      })
+
+      navigate("/login");
+    } catch (err) {
+      alert("Registration failed");
+      console.log(err);
+    }
+
   }
+}
 
   return (
     <div className="result-container">
