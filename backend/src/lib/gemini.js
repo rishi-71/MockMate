@@ -8,14 +8,21 @@ export const generateHint = async (questionText) => {
     // SDK khud best version aur endpoint dhoond lega
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
-    const prompt = `
+  const prompt = `
 You are a coding mentor.
-Give only a short hint.
-Do NOT give full solution.
 
-Question:
+Give a short hint to help solve the problem.
+
+Do NOT give:
+- full solution
+- full code
+- exact algorithm
+
+Give only guidance.
+
+Problem:
 ${questionText}
-    `;
+`;
 
     const result = await model.generateContent(prompt);
     const text = result.response.text();
