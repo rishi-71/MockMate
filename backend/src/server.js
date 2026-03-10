@@ -5,6 +5,7 @@ import {connectDB} from "./lib/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import codingRoutes from "./routes/codingRoutes.js";
 import theoryRoutes from "./routes/theoryRoutes.js";
+import resultRoutes from "./routes/resultRoutes.js";
 
 
 const app = express();
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use("/api/theory",theoryRoutes);
 app.use("/api/auth",authRoutes);
 app.use("/api/coding",codingRoutes);
+app.use("/api",resultRoutes);
 
 app.get("/",(req,res)=>{
     res.send("MockMate Backend Running");
