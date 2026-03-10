@@ -1,63 +1,63 @@
-// import { useEffect, useState } from "react";
-// import axios from "../api/axios";
+import {useEffect,useState} from "react";
+import axios from "../api/axios";
 
-// const Result = () => {
-//   const [results, setResults] = useState([]);
-//   const token = localStorage.getItem("token");
+const Results = ()=>{
 
-//   useEffect(() => {
-//     const fetchResults = async () => {
-//       const res = await axios.get("/coding/results", {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//         },
-//       });
+const [quiz,setQuiz] = useState([]);
+const [coding,setCoding] = useState([]);
 
-//       setResults(res.data);
-//     };
+const token = localStorage.getItem("token");
 
-//     fetchResults();
-//   }, []);
+useEffect(()=>{
 
-//   return (
-// <div className="container">
-//   <h2 className="title">Your Progress</h2>
+const fetchResults = async ()=>{
 
-//   {results.map((r) => (
-//     <div key={r._id} className="result-item">
-//       <strong>{r.question?.title}</strong>
-//       <p className={r.isCorrect ? "correct" : "wrong"}>
-//         {r.isCorrect ? "Correct" : "Wrong"}
-//       </p>
-//       <p>Score: {r.score}</p>
-//     </div>
-//   ))}
-// </div>
-//   );
-// };
+const res = await axios.get(
+"/results",
+{
+headers:{Authorization:`Bearer ${token}`}
+}
+);
 
-// export default Result;
+console.log("Api response",res.data);
 
-import { useLocation } from "react-router-dom";
+setQuiz(res.data.quizResults);
+setCoding(res.data.codingResults);
 
-const Result = () => {
-
-  const location = useLocation();
-  const result = location.state;
-
-  if (!result) return <h2>No result found</h2>;
-
-  return (
-    <div className="container">
-
-      <h2>Quiz Result</h2>
-
-      <h3>
-        Score: {result.score} / {result.total}
-      </h3>
-
-    </div>
-  );
 };
 
-export default Result;
+fetchResults();
+
+},[]);
+
+return(
+
+<div className="container">
+
+<h2>Quiz Results</h2>
+
+{quiz.map(r=>(
+<div key={r._id}>
+
+Score: {r.score}/{r.total}
+
+</div>
+))}
+
+<h2 style={{marginTop:"30px"}}>Coding Results</h2>
+
+{coding.map(r=>(
+<div key={r._id}>
+
+Passed: {r.passed}/{r.total}
+
+</div>
+))}
+
+</div>
+
+)
+
+}
+
+export default Results;

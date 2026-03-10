@@ -1,72 +1,65 @@
-import { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
-import Input from "../components/Input"
-import api from "../api/axios"
-import "../styles/register.css";
+import { useLocation, useNavigate } from "react-router-dom";
+import "../styles/result.css";
 
-function Register() {
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const navigate = useNavigate()
+const Result = () => {
 
-  async function handleRegister() {
-    try {
-      await api.post("/auth/register", {
-        name,
-        email,
-        password
-      })
+  const location = useLocation();
+  const navigate = useNavigate();
+  const result = location.state;
 
-      navigate("/login");
-    } catch (err) {
-      alert("Registration failed");
-      console.log(err);
-    }
+  if (!result) {
+    return (
+      <div className="result-container">
+        <h2>No result available</h2>
+        <button onClick={() => navigate("/dashboard")}>
+          Go Back
+        </button>
+      </div>
+    );
   }
 
   return (
-  <div className="register-container">
+    <div className="result-container">
 
-    <div className="register-card">
+      <h1 className="result-title">Quiz Result</h1>
 
-      <h2 className="register-title">Register</h2>
-
-      <div className="register-form">
-
-        <Input
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-
-        <Input
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-
-        <Input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-
-        <button className="register-btn" onClick={handleRegister}>
-          Register
-        </button>
-
-        <p className="register-footer">
-          Already have an account? <Link to="/login">Login</Link>
-        </p>
-
+      <div className="score-box">
+        Score: {result.score} / {result.total}
       </div>
 
+      {result.questions.map((q, index) => (
+        <div key={index} className="result-card">
+
+          <h3>
+            {index + 1}. {q.question}
+          </h3>
+
+          <p>
+            <strong>Your Answer:</strong> {q.userAnswer || "Not Answered"}
+          </p>
+
+          <p>
+            <strong>Correct Answer:</strong> {q.correctAnswer}
+          </p>
+
+          <p
+            className={q.isCorrect ? "correct" : "wrong"}
+          >
+            {q.isCorrect ? "Correct ✔" : "Incorrect ❌"}
+          </p>
+
+        </div>
+      ))}
+
+      <button
+        className="result-btn"
+        onClick={() => navigate("/dashboard")}
+      >
+        Back to Dashboard
+      </button>
+
     </div>
+  );
+};
 
-  </div>
-)
-}
-
-export default Register
+export default Result;
