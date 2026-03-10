@@ -58,7 +58,13 @@ function Register() {
         </p>
       </div>
     </div>
+<<<<<<< Updated upstream
   );
 }
+=======
+
+  </div>
+)
+>>>>>>> Stashed changes
 
 export default Register;
