@@ -70,7 +70,7 @@ return res.status(400).json({message:"Invalid questions data"});
 let score = 0;
 
 questions.forEach(q=>{
-if(q.userAnswer === q.correctAnswer){
+if(q.userAnswer?.trim() === q.correctAnswer?.trim()){
 score++;
 }
 });
@@ -103,7 +103,7 @@ export const getQuizResults = async (req, res) => {
   try {
 
     const results = await QuizResult.find({
-      user: req.user
+      user: req.user._id
     }).sort({ createdAt: -1 });
 
     res.json(results);
