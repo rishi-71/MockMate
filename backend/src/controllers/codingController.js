@@ -306,8 +306,10 @@ export const submitSolution = async (req, res) => {
     const score = isCorrect ? 10 : 0;
 
     await Result.create({
-      user: req.user,
+      user: req.user._id,
       question: questionId,
+      passed,
+      total,
       isCorrect,
       score
     });

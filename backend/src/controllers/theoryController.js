@@ -57,34 +57,46 @@ Only JSON.
   }
 };
 
-export const submitQuiz = async (req, res) => {
-  try {
+export const submitQuiz = async (req,res)=>{
 
-    const { questions } = req.body;
+try{
 
-    let score = 0;
+const {questions} = req.body;
 
-    questions.forEach(q => {
-      if (q.correctAnswer === q.userAnswer) {
-        score++;
-      }
-    });
+if(!questions || !Array.isArray(questions)){
+return res.status(400).json({message:"Invalid questions data"});
+}
 
-    const result = await QuizResult.create({
-      user: req.user,
-      questions,
-      score,
-      total: questions.length
-    });
+let score = 0;
 
-    res.json({
-      score,
-      total: questions.length
-    });
+questions.forEach(q=>{
+if(q.userAnswer === q.correctAnswer){
+score++;
+}
+});
 
-  } catch (err) {
-    res.status(500).json({ message: "Quiz submission failed" });
-  }
+const result = await QuizResult.create({
+
+user:req.user._id,
+score,
+total:questions.length,
+questions
+
+});
+
+res.json({
+score,
+total:questions.length,
+questions
+});
+
+}catch(err){
+
+console.error("Quiz Submit Error:",err);
+res.status(500).json({message:err.message});
+
+}
+
 };
 
 export const getQuizResults = async (req, res) => {
