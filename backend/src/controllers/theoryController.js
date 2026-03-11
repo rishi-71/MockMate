@@ -63,44 +63,34 @@ try{
 
 const {questions} = req.body;
 
+if(!questions || !Array.isArray(questions)){
+return res.status(400).json({message:"Invalid questions data"});
+}
+
 let score = 0;
 
-const evaluated = questions.map(q=>{
+    questions.forEach(q => {
+      if (q.correctAnswer === q.userAnswer) {
+        score++;
+      }
+    });
 
-const correct = q.correctAnswer === q.userAnswer;
+    const result = await QuizResult.create({
+      user: req.user._id,
+      questions,
+      score,
+      total: questions.length
+    });
 
-if(correct) score++;
+    res.json({
+      score,
+      total: questions.length
+    });
 
-return{
-...q,
-isCorrect:correct
+  } catch (err) {
+    res.status(500).json({ message: "Quiz submission failed" });
+  }
 };
-
-});
-
-const result = await QuizResult.create({
-
-user:req.user._id,
-questions:evaluated,
-score,
-total:questions.length
-
-});
-
-console.log("Saved Result:",result); // DEBUG
-
-res.json(result);
-
-}catch(err){
-
-console.error(err);
-res.status(500).json({message:err.message});
-
-}
-
-}
-  
-
 
 export const getQuizResults = async (req, res) => {
   try {

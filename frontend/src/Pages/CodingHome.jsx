@@ -1,65 +1,73 @@
+// 
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "../api/axios";
-import "../styles/dashboard.css";
+import { useNavigate } from "react-router-dom";
+import "../styles/codingHome.css";
 
-const CodingHome = () => {
+export default function CodingHome() {
+
   const [topics, setTopics] = useState([]);
+  const [loading,setLoading] = useState(false);
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
 
   useEffect(() => {
-    const fetchTopics = async () => {
-      try {
-        const res = await axios.get("/coding/topics", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        setTopics(res.data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
     fetchTopics();
-  }, [token]);
+  }, []);
 
-  const handleGenerateQuestion = async (topicName) => {
+  const fetchTopics = async () => {
     try {
-      const res = await axios.post(
-        "/coding/generate",
-        { topic: topicName },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      // Save question in localStorage (temporary)
-      localStorage.setItem("currentCodingQuestion", JSON.stringify(res.data));
-
-      // Navigate to coding practice page
-      navigate("/coding/practice");
-
+      const res = await axios.get("/coding/topics");
+      setTopics(res.data);
     } catch (err) {
-      console.error("Generate Question Error:", err);
+      console.error(err);
     }
   };
 
-  return (
-    <div className="container">
-      <h2 className="title">Select Coding Topic</h2>
+ const handleTopicClick = async (topic) => {
 
-      {topics.map((t) => (
-        <div
-          key={t._id}
-          className="topic-item"
-          onClick={() => handleGenerateQuestion(t.name)}
-        >
-          {t.name}
-        </div>
-      ))}
-    </div>
-  );
+  try {
+
+    setLoading(true);
+
+    const res = await axios.post("/coding/generate", {
+      topic
+    });
+
+    navigate("/coding/practice", {
+      state: res.data
+    });
+
+  } catch (err) {
+
+    console.error(err);
+
+  } finally {
+
+    setLoading(false);
+
+  }
 };
 
-export default CodingHome;
+return (
+  <div className="coding-page">
+
+    <h1 className="coding-title">Select Coding Topic</h1>
+
+    <div className="topics-grid">
+
+      {topics.map((topic) => (
+        <div
+          key={topic._id}
+          className="topic-card"
+          onClick={() => handleTopicClick(topic.name)}
+        >
+          <h3>{topic.name}</h3>
+          <p>Practice problems related to {topic.name}</p>
+        </div>
+      ))}
+
+    </div>
+
+  </div>
+);
+}

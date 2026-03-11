@@ -170,15 +170,29 @@ export const generateCodingQuestion = async (req, res) => {
   try {
     const { topic } = req.body;
 
-    const prompt = `
-Generate 1 C++ coding problem for topic: ${topic}
+   const randomSeed = Math.floor(Math.random() * 100000);
 
-Return STRICT valid JSON only in this exact structure:
+const prompt = `
+Generate a UNIQUE C++ coding interview problem.
+
+Topic: ${topic}
+
+Focus strictly on algorithms related to this topic.
+Example techniques for this topic should appear in the solution.
+RandomSeed: ${randomSeed}
+
+Rules:
+- The problem must be different every time
+- Avoid classic problems like Two Sum, Reverse String, etc.
+- Create realistic constraints
+- Difficulty: Medium
+
+Return STRICT valid JSON only in this structure:
 
 {
   "title": "Problem title",
   "description": "Clear problem description",
-  "difficulty": "Easy",
+  "difficulty": "Easy/Medium/Hard",
   "template": "Full valid C++ template including class Solution and main() using standard input/output only",
   "testCases": [
     { "input": "example input 1", "expectedOutput": "correct output 1" },
@@ -188,12 +202,11 @@ Return STRICT valid JSON only in this exact structure:
 }
 
 IMPORTANT RULES:
-- Template must use std::cin / getline for input
-- Template must print ONLY the function return value
-- No debug prints
+- Template must use std::cin / getline
+- Template must print ONLY the final result
 - No explanations
 - No markdown
-- No extra text outside JSON
+- No text outside JSON
 `;
 
     const response = await fetch(
@@ -275,7 +288,7 @@ export const submitSolution = async (req, res) => {
     }
 
     let passed = 0;
-    const total = question.testCases.length;
+   // const total = question.testCases.length;
 
     for (const test of question.testCases) {
 
@@ -307,11 +320,14 @@ export const submitSolution = async (req, res) => {
 
     const isCorrect = passed === total;
     const score = isCorrect ? 10 : 0;
+    const total = question.testCases.length;
 
     // Save basic attempt
     await Result.create({
       user: req.user._id,
       question: questionId,
+      passed,
+      total,
       isCorrect,
       score
     });

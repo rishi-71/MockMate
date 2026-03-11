@@ -2,23 +2,36 @@ import mongoose from "mongoose";
 
 const codingResultSchema = new mongoose.Schema({
 
-  user:{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:"User",
-    required:true
-  },
+user:{
+type:mongoose.Schema.Types.ObjectId,
+ref:"User",
+required:true
+},
 
-  question:{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:"Question"
-  },
+question:{
+type:mongoose.Schema.Types.ObjectId,
+ref:"Question"
+},
 
-  passed:Number,
-  total:Number,
+passed:{
+type:Number,
+default:0
+},
 
-  isCorrect:Boolean,
+total:{
+type:Number,
+default:0
+},
 
-  score:Number
+isCorrect:{
+type:Boolean,
+default:false
+},
+
+score:{
+type:Number,
+default:0
+}
 
 },{timestamps:true});
 
