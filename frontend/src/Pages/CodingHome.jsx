@@ -23,28 +23,26 @@ export default function CodingHome() {
     }
   };
 
- const handleTopicClick = async (topic) => {
-
+const handleTopicClick = async (topic) => {
   try {
-
     setLoading(true);
 
     const res = await axios.post("/coding/generate", {
       topic
     });
 
-    navigate("/coding/practice", {
-      state: res.data
-    });
+    // 🔹 Save new question
+    localStorage.setItem(
+      "currentCodingQuestion",
+      JSON.stringify(res.data)
+    );
+
+    navigate("/coding/practice");
 
   } catch (err) {
-
     console.error(err);
-
   } finally {
-
     setLoading(false);
-
   }
 };
 
@@ -52,6 +50,11 @@ return (
   <div className="coding-page">
 
     <h1 className="coding-title">Select Coding Topic</h1>
+    {loading && (
+  <div className="loading-box">
+    Generating question...
+  </div>
+)}
 
     <div className="topics-grid">
 

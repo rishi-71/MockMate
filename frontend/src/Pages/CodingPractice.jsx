@@ -14,49 +14,64 @@ const CodingPractice = () => {
   const token = localStorage.getItem("token");
 
   // Load AI generated question
-  useEffect(() => {
-    const savedQuestion = localStorage.getItem("currentCodingQuestion");
+useEffect(() => {
+  const savedQuestion = localStorage.getItem("currentCodingQuestion");
 
-    if (savedQuestion) {
-      const parsed = JSON.parse(savedQuestion);
-      setQuestion(parsed);
-      setCode(parsed.template); // load template into editor
-    }
-  }, []);
+  if (savedQuestion) {
+    const parsed = JSON.parse(savedQuestion);
+    console.log("Loaded Question:", parsed);
+    setQuestion(parsed);
+    setCode(parsed.template);
+  }
+}, []);
 
-  const runCode = async () => {
-    try {
-      setLoading(true);
-      setOutput("");
+const runCode = async () => {
+
+  try {
+
+    setLoading(true);
+    let results = [];
+
+    for (let i = 0; i < question.testCases.length; i++) {
+
+      const test = question.testCases[i];
 
       const res = await axios.post(
         "/coding/execute",
         {
           code,
-          input,
+          input: test.input
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
-          },
+            Authorization: `Bearer ${token}`
+          }
         }
       );
 
-      if (res.data.compile_output) {
-        setOutput("Compile Error:\n" + res.data.compile_output);
-      } else if (res.data.stderr) {
-        setOutput("Runtime Error:\n" + res.data.stderr);
-      } else {
-        setOutput(res.data.stdout || "No Output");
-      }
+      const output = res.data.stdout?.trim();
+      const expected = test.expectedOutput.trim();
 
-    } catch (err) {
-      console.error("Execution Error:", err);
-      setOutput("Execution Failed");
-    } finally {
-      setLoading(false);
+      results.push({
+        input: test.input,
+        expected,
+        output,
+        passed: output === expected
+      });
     }
-  };
+
+    setOutput(results);
+
+  } catch (err) {
+
+    console.error(err);
+
+  } finally {
+
+    setLoading(false);
+
+  }
+};
 
   if (!question) return <div className="container">Loading...</div>;
   
@@ -66,7 +81,7 @@ const CodingPractice = () => {
     const res = await axios.post(
       "/coding/submit",
       {
-        questionId: question._id,
+        question,
         code
       },
       {
@@ -91,6 +106,16 @@ const CodingPractice = () => {
       <p>{question.description}</p>
     </div>
 
+    <h3 style={{ marginTop: "20px" }}>Test Cases</h3>
+
+{question.testCases.map((t, index) => (
+  <div key={index} className="testcase-box">
+    <strong>Test Case {index + 1}</strong>
+    <p><b>Input:</b> {t.input}</p>
+    <p><b>Expected:</b> {t.expectedOutput}</p>
+  </div>
+))}
+
     {/* RIGHT SIDE - Editor */}
     <div className="editor-section">
       <Editor
@@ -106,13 +131,7 @@ const CodingPractice = () => {
         }}
       />
 
-      <h3 style={{ marginTop: "15px" }}>Custom Input</h3>
-      <textarea
-        className="input-box"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        placeholder="Enter test input here"
-      />
+     
 
       <button
         className="btn"
@@ -129,13 +148,25 @@ const CodingPractice = () => {
       >
         Submit Solution
       </button>
+{Array.isArray(output) && (
+  <div className="output-box">
+    <h3>Test Results</h3>
 
-      {output && (
-        <div className="output-box">
-          <strong>Output:</strong>
-          <pre>{output}</pre>
-        </div>
-      )}
+    {output.map((r, i) => (
+      <div key={i} className="test-result">
+        <strong>Test Case {i + 1}</strong>
+
+        <p>Input: {r.input}</p>
+        <p>Expected: {r.expected}</p>
+        <p>Your Output: {r.output}</p>
+
+        <p style={{ color: r.passed ? "#00ff88" : "#ff4d4d" }}>
+          {r.passed ? "Passed" : "Failed"}
+        </p>
+      </div>
+    ))}
+  </div>
+)}
 
       {submissionResult && (
         <div

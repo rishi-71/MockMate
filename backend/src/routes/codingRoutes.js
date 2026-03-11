@@ -17,5 +17,9 @@ router.post("/code-hint", protect, generateCodeHint);
 router.post("/execute", protect, executeCode);
 router.post("/generate", protect, generateCodingQuestion);
 router.post("/submit", protect, submitSolution);
+// router.post("/submit", protect, (req,res)=>{
+//   console.log("Submit route hit");
+//   res.send("Submit working");
+// });
 
 export default router;

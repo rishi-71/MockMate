@@ -5,7 +5,6 @@ import api from "../api/axios";
 import "../styles/register.css";
 
 function Register() {
-
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -93,9 +92,7 @@ function Register() {
         <p>
           Already have an account? <Link to="/login">Login</Link>
         </p>
-
       </div>
-
     </div>
   );
 }

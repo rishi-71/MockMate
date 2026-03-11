@@ -2,6 +2,7 @@ import Topic from "../models/Topic.js";
 import Question from "../models/Question.js";
 import Result from "../models/Result.js";
 import { generateHint } from "../lib/gemini.js";
+import CodingResult from "../models/CodingResult.js";
 
 
 export const getTopics = async (req,res) =>{
@@ -40,7 +41,7 @@ export const submitAttempt = async (req,res)=>{
     const {questionId,isCorrect} = req.body;
 
     const result = await Result.create({
-        user:req.user,
+        user:req.user._id,
         question:questionId,
         isCorrect,
         score: isCorrect ? 10 : 0,
@@ -169,55 +170,90 @@ export const generateCodingQuestion = async (req, res) => {
   try {
     const { topic } = req.body;
 
-   const randomSeed = Math.floor(Math.random() * 100000);
+   console.log("Topic received",topic);
+
+
+
+const randomSeed = Math.floor(Math.random() * 100000);
 
 const prompt = `
-Generate a UNIQUE C++ coding interview problem.
+You are an expert coding interview problem generator.
 
-Topic: ${topic}
+Generate ONE coding problem for topic: ${topic}.
 
-Focus strictly on algorithms related to this topic.
-Example techniques for this topic should appear in the solution.
 RandomSeed: ${randomSeed}
 
 Rules:
-- The problem must be different every time
-- Avoid classic problems like Two Sum, Reverse String, etc.
-- Create realistic constraints
-- Difficulty: Medium
+- The problem MUST belong to topic "${topic}".
+- Do NOT generate the problem "Find Maximum Element in Array".
+- Do NOT generate simple textbook problems like max element, reverse string, etc.
+- The problem must involve an algorithm related to the topic.
+- Difficulty: Medium.
 
-Return STRICT valid JSON only in this structure:
+Return JSON only:
 
 {
-  "title": "Problem title",
-  "description": "Clear problem description",
-  "difficulty": "Easy/Medium/Hard",
-  "template": "Full valid C++ template including class Solution and main() using standard input/output only",
-  "testCases": [
-    { "input": "example input 1", "expectedOutput": "correct output 1" },
-    { "input": "example input 2", "expectedOutput": "correct output 2" },
-    { "input": "example input 3", "expectedOutput": "correct output 3" }
-  ]
+"title": "",
+"description": "",
+"difficulty": "Easy/Medium/Hard",
+"template": "",
+"testCases": [
+{"input": "", "expectedOutput": ""},
+{"input": "", "expectedOutput": ""},
+{"input": "", "expectedOutput": ""}
+]
 }
 
-IMPORTANT RULES:
-- Template must use std::cin / getline
-- Template must print ONLY the final result
-- No explanations
-- No markdown
-- No text outside JSON
-`;
+Template rules:
+- Must compile
+- Must contain class Solution
+- Must NOT contain the solution
+- Only include function skeleton
 
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-        }),
+Example template format:
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    int solve(vector<int>& nums) {
+
+        // Write your solution here
+
+    }
+};
+
+int main(){
+    int n;
+    cin >> n;
+
+    vector<int> nums(n);
+    for(int i=0;i<n;i++)
+        cin >> nums[i];
+
+    Solution sol;
+    cout << sol.solve(nums);
+
+    return 0;
+}
+
+Return only JSON.
+`;
+   const response = await fetch(
+  `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: {
+        temperature: 0.9
       }
-    );
+    })
+  }
+);
 
     const data = await response.json();
 
@@ -238,6 +274,7 @@ IMPORTANT RULES:
     }
 
     const rawText = data.candidates[0]?.content?.parts?.[0]?.text;
+    console.log("ai ", rawText);
 
     if (!rawText) {
       return res.status(500).json({
@@ -278,50 +315,70 @@ IMPORTANT RULES:
 };
 export const submitSolution = async (req, res) => {
   try {
-    const { questionId, code } = req.body;
+    const { question, code } = req.body;
 
-    const question = await Question.findById(questionId);
+    
+    // const question = await Question.findById(questionId);
 
-    if (!question) {
-      return res.status(404).json({ message: "Question not found" });
+    // if (!question) {
+    //   return res.status(404).json({ message: "Question not found" });
+    // }
+
+   let passed = 0;
+
+for (const test of question.testCases) {
+
+  const response = await fetch(
+    "https://ce.judge0.com/submissions?base64_encoded=false&wait=true",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        source_code: code,
+        language_id: 54,
+        stdin: test.input
+      })
     }
+  );
 
-    let passed = 0;
+  const result = await response.json();
 
-    for (const test of question.testCases) {
+  const userOutput = result.stdout?.trim();
+  const expected = test.expectedOutput.trim();
 
-      const response = await fetch(
-        "https://ce.judge0.com/submissions?base64_encoded=false&wait=true",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            source_code: code,
-            language_id: 54,
-            stdin: test.input
-          })
-        }
-      );
+  if (userOutput === expected) {
+    passed++;
+  }
+}
 
-      const result = await response.json();
+const total = question.testCases.length;
 
-      const userOutput = result.stdout?.trim();
-      const expected = test.expectedOutput.trim();
-
-      if (userOutput === expected) {
-        passed++;
-      }
-    }
-
-    const isCorrect = passed === question.testCases.length;
-    const score = isCorrect ? 10 : 0;
-    const total = question.testCases.length;
+const isCorrect = passed === total;
+const score = isCorrect ? 10 : 0;
 
     await Result.create({
       user: req.user._id,
-      question: questionId,
+        question: {
+    title: question.title,
+    description: question.description,
+    difficulty: question.difficulty
+  },
+      passed,
+      total,
+      isCorrect,
+      score
+    });
+
+    // Save detailed coding result
+    await CodingResult.create({
+      user: req.user._id,
+      question:{
+        title: question.title,
+        description:question.description,
+        difficulty:question.difficulty
+      },
       passed,
       total,
       isCorrect,

@@ -1,60 +1,61 @@
-// import { useEffect, useState } from "react";
-// import axios from "../api/axios";
-
-// const Result = () => {
-//   const [results, setResults] = useState([]);
-//   const token = localStorage.getItem("token");
-
-//   useEffect(() => {
-//     const fetchResults = async () => {
-//       const res = await axios.get("/coding/results", {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//         },
-//       });
-
-//       setResults(res.data);
-//     };
-
-//     fetchResults();
-//   }, []);
-
-//   return (
-// <div className="container">
-//   <h2 className="title">Your Progress</h2>
-
-//   {results.map((r) => (
-//     <div key={r._id} className="result-item">
-//       <strong>{r.question?.title}</strong>
-//       <p className={r.isCorrect ? "correct" : "wrong"}>
-//         {r.isCorrect ? "Correct" : "Wrong"}
-//       </p>
-//       <p>Score: {r.score}</p>
-//     </div>
-//   ))}
-// </div>
-//   );
-// };
-
-// export default Result;
-
-import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "../api/axios";
 
 const Result = () => {
 
-  const location = useLocation();
-  const result = location.state;
+  const [quizResults, setQuizResults] = useState([]);
+  const [codingResults, setCodingResults] = useState([]);
 
-  if (!result) return <h2>No result found</h2>;
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+
+    const fetchResults = async () => {
+
+      try {
+
+        const res = await axios.get("/results", {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        setQuizResults(res.data.quizResults);
+        setCodingResults(res.data.codingResults);
+
+      } catch (err) {
+        console.error(err);
+      }
+
+    };
+
+    fetchResults();
+
+  }, []);
 
   return (
     <div className="container">
 
-      <h2>Quiz Result</h2>
+      <h2>Quiz History</h2>
 
-      <h3>
-        Score: {result.score} / {result.total}
-      </h3>
+      {quizResults.map((q, i) => (
+        <div key={i} className="result-card">
+          <p>Score: {q.score} / {q.total}</p>
+          <p>Date: {new Date(q.createdAt).toLocaleString()}</p>
+        </div>
+      ))}
+
+      <h2 style={{ marginTop: "30px" }}>Coding History</h2>
+
+      {codingResults.map((c, i) => (
+        <div key={i} className="result-card">
+          <p><b>{c.question.title}</b></p>
+          <p>Status: {c.isCorrect ? "Accepted" : "Wrong"}</p>
+          <p>Passed: {c.passed} / {c.total}</p>
+          <p>Score: {c.score}</p>
+          <p>Date: {new Date(c.createdAt).toLocaleString()}</p>
+        </div>
+      ))}
 
     </div>
   );
