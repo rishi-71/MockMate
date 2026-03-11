@@ -57,20 +57,19 @@ Only JSON.
   }
 };
 
-export const submitQuiz = async (req,res)=>{
+export const submitQuiz = async (req, res) => {
+  try {
 
-try{
+    const { questions } = req.body;
 
-const {questions} = req.body;
+    if (!questions || !Array.isArray(questions)) {
+      return res.status(400).json({ message: "Invalid questions data" });
+    }
 
-if(!questions || !Array.isArray(questions)){
-return res.status(400).json({message:"Invalid questions data"});
-}
-
-let score = 0;
+    let score = 0;
 
     questions.forEach(q => {
-      if (q.correctAnswer === q.userAnswer) {
+      if (q.userAnswer?.trim() === q.correctAnswer?.trim()) {
         score++;
       }
     });
@@ -84,11 +83,15 @@ let score = 0;
 
     res.json({
       score,
-      total: questions.length
+      total: questions.length,
+      questions
     });
 
   } catch (err) {
-    res.status(500).json({ message: "Quiz submission failed" });
+
+    console.error("Quiz Submit Error:", err);
+    res.status(500).json({ message: err.message });
+
   }
 };
 
