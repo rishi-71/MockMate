@@ -6,10 +6,13 @@ const resultSchema = new mongoose.Schema(
         type:mongoose.Schema.Types.ObjectId,
         ref:"User",
     },
-    question:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Question",
-    },
+   question: {
+  title: String,
+  description: String,
+  difficulty: String
+},
+    passed:Number,
+    total:Number,
     isCorrect:Boolean,
     score:Number,
 },

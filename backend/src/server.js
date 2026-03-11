@@ -13,13 +13,13 @@ const app = express();
 // middleware
 app.use(cors());
 app.use(express.json());
-app.use("/api/theory",theoryRoutes);
+//app.use("/api/theory",theoryRoutes);
 app.use("/api/auth",authRoutes);
-app.use("/api/coding",codingRoutes);
-app.use("/api",resultRoutes);
+//app.use("/api/coding",codingRoutes);
+//app.use("/api",resultRoutes);
 
 // routes
-app.use("/api/auth", authRoutes);
+//app.use("/api/auth", authRoutes);
 app.use("/api/theory", theoryRoutes);
 app.use("/api/coding", codingRoutes);
 app.use("/api", resultRoutes);

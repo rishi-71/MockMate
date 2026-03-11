@@ -8,9 +8,10 @@ ref:"User",
 required:true
 },
 
-question:{
-type:mongoose.Schema.Types.ObjectId,
-ref:"Question"
+question: {
+  title: String,
+  description: String,
+  difficulty: String
 },
 
 passed:{

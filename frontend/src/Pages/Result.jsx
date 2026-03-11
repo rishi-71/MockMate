@@ -1,63 +1,64 @@
-import {useEffect,useState} from "react";
+import { useEffect, useState } from "react";
 import axios from "../api/axios";
 
-const Results = ()=>{
+const Result = () => {
 
-const [quiz,setQuiz] = useState([]);
-const [coding,setCoding] = useState([]);
+  const [quizResults, setQuizResults] = useState([]);
+  const [codingResults, setCodingResults] = useState([]);
 
-const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
-useEffect(()=>{
+  useEffect(() => {
 
-const fetchResults = async ()=>{
+    const fetchResults = async () => {
 
-const res = await axios.get(
-"/results",
-{
-headers:{Authorization:`Bearer ${token}`}
-}
-);
+      try {
 
-console.log("Api response",res.data);
+        const res = await axios.get("/results", {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
 
-setQuiz(res.data.quizResults);
-setCoding(res.data.codingResults);
+        setQuizResults(res.data.quizResults);
+        setCodingResults(res.data.codingResults);
 
+      } catch (err) {
+        console.error(err);
+      }
+
+    };
+
+    fetchResults();
+
+  }, []);
+
+  return (
+    <div className="container">
+
+      <h2>Quiz History</h2>
+
+      {quizResults.map((q, i) => (
+        <div key={i} className="result-card">
+          <p>Score: {q.score} / {q.total}</p>
+          <p>Date: {new Date(q.createdAt).toLocaleString()}</p>
+        </div>
+      ))}
+
+      <h2 style={{ marginTop: "30px" }}>Coding History</h2>
+
+      {codingResults.map((c, i) => (
+        <div key={i} className="result-card">
+          <p><b>{c.question.title}</b></p>
+          <p>Status: {c.isCorrect ? "Accepted" : "Wrong"}</p>
+          <p>Passed: {c.passed} / {c.total}</p>
+          <p>Score: {c.score}</p>
+          <p>Date: {new Date(c.createdAt).toLocaleString()}</p>
+        </div>
+      ))}
+
+    </div>
+  );
 };
 
-fetchResults();
-
-},[]);
-
-return(
-
-<div className="container">
-
-<h2>Quiz Results</h2>
-
-{quiz.map(r=>(
-<div key={r._id}>
-
-Score: {r.score}/{r.total}
-
-</div>
-))}
-
-<h2 style={{marginTop:"30px"}}>Coding Results</h2>
-
-{coding.map(r=>(
-<div key={r._id}>
-
-Passed: {r.passed}/{r.total}
-
-</div>
-))}
-
-</div>
-
-)
-
-}
-
-export default Results;
+export default Result;
