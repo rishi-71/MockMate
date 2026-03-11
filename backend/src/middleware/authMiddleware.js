@@ -4,7 +4,6 @@ import User from "../models/User.js";
 export const protect = async (req,res,next)=>{
 
 try{
-<<<<<<< HEAD
 
 const token = req.headers.authorization?.split(" ")[1];
 
@@ -27,27 +26,3 @@ res.status(401).json({message:"Token invalid"});
 }
 
 };
-=======
-
-const token = req.headers.authorization?.split(" ")[1];
-
-if(!token){
-return res.status(401).json({message:"Not authorized"});
-}
-
-const decoded = jwt.verify(token,process.env.JWT_SECRET);
-
-const user = await User.findById(decoded.id);
-
-req.user = user;
-
-next();
-
-}catch(err){
-
-res.status(401).json({message:"Token invalid"});
-
-}
-
-};
->>>>>>> main

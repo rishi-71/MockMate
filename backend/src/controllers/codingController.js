@@ -2,7 +2,6 @@ import Topic from "../models/Topic.js";
 import Question from "../models/Question.js";
 import Result from "../models/Result.js";
 import { generateHint } from "../lib/gemini.js";
-import CodingResult from "../models/CodingResult.js";
 
 
 export const getTopics = async (req,res) =>{
@@ -41,7 +40,7 @@ export const submitAttempt = async (req,res)=>{
     const {questionId,isCorrect} = req.body;
 
     const result = await Result.create({
-        user:req.user,
+        user:req.user._id,
         question:questionId,
         isCorrect,
         score: isCorrect ? 10 : 0,
@@ -287,49 +286,45 @@ export const submitSolution = async (req, res) => {
       return res.status(404).json({ message: "Question not found" });
     }
 
-    let passed = 0;
-   // const total = question.testCases.length;
+   let passed = 0;
 
-    for (const test of question.testCases) {
+for (const test of question.testCases) {
 
-      const response = await fetch(
-        "https://ce.judge0.com/submissions?base64_encoded=false&wait=true",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            source_code: code,
-            language_id: 54,
-            stdin: test.input
-          })
-        }
-      );
-
-      const result = await response.json();
-
-      const userOutput = result.stdout?.trim();
-      const expected = test.expectedOutput.trim();
-
-      if (userOutput === expected) {
-        passed++;
-      }
-
+  const response = await fetch(
+    "https://ce.judge0.com/submissions?base64_encoded=false&wait=true",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        source_code: code,
+        language_id: 54,
+        stdin: test.input
+      })
     }
+  );
 
-    const isCorrect = passed === total;
-    const score = isCorrect ? 10 : 0;
-    const total = question.testCases.length;
+  const result = await response.json();
 
-    // Save basic attempt
+  const userOutput = result.stdout?.trim();
+  const expected = test.expectedOutput.trim();
+
+  if (userOutput === expected) {
+    passed++;
+  }
+}
+
+const total = question.testCases.length;
+
+const isCorrect = passed === total;
+const score = isCorrect ? 10 : 0;
+
     await Result.create({
       user: req.user._id,
       question: questionId,
       passed,
       total,
-<<<<<<< HEAD
-=======
       isCorrect,
       score
     });
@@ -340,31 +335,19 @@ export const submitSolution = async (req, res) => {
       question: questionId,
       passed,
       total,
->>>>>>> main
       isCorrect,
       score
     });
 
     res.json({
       passed,
-      total,
+      total: question.testCases.length,
       isCorrect,
       score
     });
 
   } catch (err) {
-    console.error("Submit Solution Error:", err);
+    console.error(err);
     res.status(500).json({ message: "Submission failed" });
   }
 };
-
-// await CodingResult.create({
-
-// user:req.user._id,
-// question:questionId,
-// passed,
-// total,
-// isCorrect:passed === total,
-// score
-
-// });
