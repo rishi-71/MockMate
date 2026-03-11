@@ -62,12 +62,30 @@ export const submitQuiz = async (req,res)=>{
 try{
 
 const {questions} = req.body;
+<<<<<<< HEAD
+=======
 
 if(!questions || !Array.isArray(questions)){
 return res.status(400).json({message:"Invalid questions data"});
 }
 
 let score = 0;
+>>>>>>> main
+
+if(!questions || !Array.isArray(questions)){
+return res.status(400).json({message:"Invalid questions data"});
+}
+
+<<<<<<< HEAD
+let score = 0;
+=======
+    const result = await QuizResult.create({
+      user: req.user._id,
+      questions,
+      score,
+      total: questions.length
+    });
+>>>>>>> main
 
 questions.forEach(q=>{
 if(q.userAnswer?.trim() === q.correctAnswer?.trim()){

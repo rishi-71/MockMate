@@ -1,12 +1,47 @@
-.result-item {
-  padding: 10px;
-  border-bottom: 1px solid var(--border);
+.result-container{
+max-width:900px;
+margin:auto;
+padding:40px;
+color:white;
 }
 
-.correct {
-  color: #4caf50;
+.result-title{
+font-size:32px;
+margin-bottom:20px;
 }
 
-.wrong {
-  color: #f44336;
+.score-box{
+background:#111;
+padding:15px;
+border-radius:8px;
+margin-bottom:25px;
+font-size:18px;
+}
+
+.result-card{
+background:#111;
+padding:20px;
+margin-bottom:20px;
+border-radius:8px;
+border-left:4px solid #ff7a18;
+}
+
+.correct{
+color:lightgreen;
+font-weight:bold;
+}
+
+.wrong{
+color:#ff4d4d;
+font-weight:bold;
+}
+
+.result-btn{
+margin-top:20px;
+padding:12px 20px;
+background:#ff7a18;
+border:none;
+border-radius:6px;
+color:white;
+cursor:pointer;
 }

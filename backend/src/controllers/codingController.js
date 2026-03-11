@@ -2,6 +2,7 @@ import Topic from "../models/Topic.js";
 import Question from "../models/Question.js";
 import Result from "../models/Result.js";
 import { generateHint } from "../lib/gemini.js";
+import CodingResult from "../models/CodingResult.js";
 
 
 export const getTopics = async (req,res) =>{
@@ -287,6 +288,7 @@ export const submitSolution = async (req, res) => {
     }
 
     let passed = 0;
+   // const total = question.testCases.length;
 
     for (const test of question.testCases) {
 
@@ -313,30 +315,56 @@ export const submitSolution = async (req, res) => {
       if (userOutput === expected) {
         passed++;
       }
+
     }
 
-    const isCorrect = passed === question.testCases.length;
+    const isCorrect = passed === total;
     const score = isCorrect ? 10 : 0;
     const total = question.testCases.length;
 
+    // Save basic attempt
     await Result.create({
       user: req.user._id,
       question: questionId,
       passed,
       total,
+<<<<<<< HEAD
+=======
+      isCorrect,
+      score
+    });
+
+    // Save detailed coding result
+    await CodingResult.create({
+      user: req.user._id,
+      question: questionId,
+      passed,
+      total,
+>>>>>>> main
       isCorrect,
       score
     });
 
     res.json({
       passed,
-      total: question.testCases.length,
+      total,
       isCorrect,
       score
     });
 
   } catch (err) {
-    console.error(err);
+    console.error("Submit Solution Error:", err);
     res.status(500).json({ message: "Submission failed" });
   }
 };
+
+// await CodingResult.create({
+
+// user:req.user._id,
+// question:questionId,
+// passed,
+// total,
+// isCorrect:passed === total,
+// score
+
+// });
