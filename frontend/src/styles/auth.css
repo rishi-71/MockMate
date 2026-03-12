@@ -1,10 +1,106 @@
-.auth-wrapper {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* wrapper center */
+
+.auth-wrapper{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
 
-.auth-card {
-  width: 350px;
+
+/* LOGIN CARD WIDTH */
+
+.auth-card{
+  width:380px;
+}
+
+
+/* REGISTER CARD WIDER */
+
+.register-card{
+  width:460px;
+}
+
+
+/* TITLE */
+
+.title{
+  text-align:center;
+}
+
+
+/* FORM GROUP */
+
+.form-group{
+  display:flex;
+  flex-direction:column;
+  gap:15px;
+}
+
+
+/* INPUT */
+
+.input{
+  width:100%;
+}
+
+
+/* BUTTON */
+
+.btn{
+  display:block;
+  margin:0 auto;
+  cursor:pointer;
+  transition: all 0.3s ease;
+}
+
+
+/* BUTTON GLOW */
+
+.btn:hover{
+  box-shadow:
+  0 0 10px rgba(255,122,24,0.7),
+  0 0 20px rgba(255,122,24,0.5),
+  0 0 40px rgba(255,122,24,0.3);
+}
+
+
+/* CARD GLOW */
+
+.auth-card:focus-within{
+  box-shadow:
+  0 0 15px rgba(255,122,24,0.5),
+  0 0 30px rgba(255,122,24,0.3),
+  0 0 60px rgba(255,122,24,0.2);
+
+  transition: box-shadow 0.3s ease;
+}
+
+
+/* ACCOUNT SECTION */
+
+.account-section{
+  margin-top:20px;
+  text-align:center;
+}
+
+
+/* LOGIN LINK */
+
+.auth-link{
+  margin-left:6px;
+  text-decoration:none;
+  color:#cfcfcf;
+  transition:0.3s ease;
+}
+
+
+/* GLOW EFFECT */
+
+.auth-link:hover{
+  color:#ff7a18;
+
+  text-shadow:
+  0 0 8px rgba(255,122,24,0.8),
+  0 0 16px rgba(255,122,24,0.6);
 }

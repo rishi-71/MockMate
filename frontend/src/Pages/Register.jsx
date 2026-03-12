@@ -1,103 +1,102 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import Input from "../components/Input";
-import api from "../api/axios";
-import "../styles/register.css";
+import axios from "../api/axios";
+import { useNavigate, Link } from "react-router-dom";
+import "../styles/auth.css";
 
-function Register() {
+const Register = () => {
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [name,setName] = useState("");
+  const [email,setEmail] = useState("");
+  const [password,setPassword] = useState("");
 
   const navigate = useNavigate();
 
-  async function handleRegister() {
+  const handleRegister = async () => {
 
-    // empty validation
-    if (!name || !email || !password) {
+    if(!name || !email || !password){
       alert("All fields are required");
       return;
     }
 
-    // email validation
-    const emailRegex = /\S+@\S+\.\S+/;
+    try{
 
-    if (!emailRegex.test(email)) {
-      alert("Please enter a valid email");
-      return;
-    }
-
-    // password length
-    if (password.length < 6) {
-      alert("Password must be at least 6 characters");
-      return;
-    }
-
-    try {
-
-      const res = await api.post("/auth/register", {
+      const res = await axios.post("/auth/register",{
         name,
         email,
-        password,
+        password
       });
 
-      alert(res.data.message || "Registration successful!");
+      alert(res.data.message || "Registration successful");
 
       navigate("/login");
 
-    } catch (err) {
+    }
+    catch(err){
 
-      console.error(err);
+      console.log(err);
 
-      if (err.response?.data?.message) {
+      if(err.response?.data?.message){
         alert(err.response.data.message);
-      } else {
+      }
+      else{
         alert("Registration failed");
       }
 
     }
 
-  }
+  };
 
   return (
-    <div className="register-container">
 
-      <div className="register-card">
+    <div className="auth-wrapper">
 
-        <h2>Create Account</h2>
+      <div className="card auth-card register-card">
 
-        <Input
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+        <h2 className="title">Create Account</h2>
 
-        <Input
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <div className="form-group">
 
-        <Input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+          <input
+            className="input"
+            placeholder="Name"
+            onChange={(e)=>setName(e.target.value)}
+          />
 
-        <button onClick={handleRegister}>
+          <input
+            className="input"
+            placeholder="Email"
+            onChange={(e)=>setEmail(e.target.value)}
+          />
+
+          <input
+            className="input"
+            type="password"
+            placeholder="Password"
+            onChange={(e)=>setPassword(e.target.value)}
+          />
+
+        </div>
+
+        <button className="btn" onClick={handleRegister}>
           Register
         </button>
 
-        <p>
-          Already have an account? <Link to="/login">Login</Link>
-        </p>
+        <div className="account-section">
+
+          <p>
+            Already have an account?
+            <Link className="auth-link" to="/login">
+              Login
+            </Link>
+          </p>
+
+        </div>
 
       </div>
 
     </div>
+
   );
-}
+};
 
 export default Register;
