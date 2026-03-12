@@ -12,12 +12,18 @@ const quizResultSchema = new mongoose.Schema({
       question: String,
       options: [String],
       correctAnswer: String,
-      userAnswer: String
+      userAnswer: String,
+      isCorrect:Boolean
     }
   ],
 
   score: Number,
-  total: Number
+  total: Number,
+
+  // type:{
+  //   type:String,
+  //   default:"theory"
+  // }
 
 }, { timestamps: true });
 

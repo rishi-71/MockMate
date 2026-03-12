@@ -9,7 +9,7 @@ const router = express.Router();
 router.get("/results", protect, async (req, res) => {
   try {
 
-    const quizResults = await Result.find({
+    const quizResults = await QuizResult.find({
       user: req.user._id
     }).sort({ createdAt: -1 });
 

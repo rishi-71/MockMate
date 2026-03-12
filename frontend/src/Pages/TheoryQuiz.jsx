@@ -8,7 +8,8 @@ const TheoryQuiz = () => {
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState({});
   const [file, setFile] = useState(null);
-  const navigate = useNavigate();
+ // const navigate = useNavigate();
+  const [result,setResult] = useState(null);
 
   const token = localStorage.getItem("token");
 
@@ -37,7 +38,7 @@ const TheoryQuiz = () => {
   };
 
   const submitQuiz = async () => {
-    const formattedQuestions = questions.map((q, i) => ({
+    const formatted = questions.map((q, i) => ({
       question: q.question,
       options: q.options,
       correctAnswer: q.answer,
@@ -47,15 +48,16 @@ const TheoryQuiz = () => {
     try {
       const res = await axios.post(
         "/theory/submit",
-        { questions: formattedQuestions },
+        { questions: formatted },
         {
           headers: { Authorization: `Bearer ${token}` },
         },
       );
 
-      navigate("/results", {
-        state: res.data,
-      });
+      // navigate("/results", {
+      //   state: res.data,
+      // });
+      setResult(res.data);
     } catch (err) {
       console.error(err);
     }
@@ -131,7 +133,43 @@ Generate From File
           Submit Quiz
         </button>
       )}
+      {result && (
+
+<div className="quiz-result">
+
+<h2>Result</h2>
+
+<h3>
+Score: {result.score} / {result.total}
+</h3>
+
+{result.questions.map((q,i)=>(
+
+<div key={i} className="result-card">
+
+<h4>{i+1}. {q.question}</h4>
+
+<p>Your Answer: {q.userAnswer}</p>
+
+<p>Correct Answer: {q.correctAnswer}</p>
+
+<p style={{
+color:q.isCorrect ? "lightgreen":"red"
+}}>
+
+{q.isCorrect ? "Correct ✔":"Wrong ❌"}
+
+</p>
+
+</div>
+
+))}
+
+</div>
+
+)}
     </div>
+    
   );
 };
 

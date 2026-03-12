@@ -3,11 +3,10 @@ import axios from "../api/axios";
 import { useNavigate, Link } from "react-router-dom";
 import "../styles/auth.css";
 
-const Register = () => {
-
-  const [name,setName] = useState("");
-  const [email,setEmail] = useState("");
-  const [password,setPassword] = useState("");
+function Register() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
 
@@ -81,19 +80,10 @@ const Register = () => {
           Register
         </button>
 
-        <div className="account-section">
-
-          <p>
-            Already have an account?
-            <Link className="auth-link" to="/login">
-              Login
-            </Link>
-          </p>
-
-        </div>
-
+        <p>
+          Already have an account? <Link to="/login">Login</Link>
+        </p>
       </div>
-
     </div>
 
   );
