@@ -8,6 +8,7 @@ export default function CodingHome() {
 
   const [topics, setTopics] = useState([]);
   const [loading,setLoading] = useState(false);
+  const [difficulty, setDifficulty] = useState("Medium");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,7 +29,8 @@ const handleTopicClick = async (topic) => {
     setLoading(true);
 
     const res = await axios.post("/coding/generate", {
-      topic
+      topic,
+      difficulty
     });
 
     // 🔹 Save new question
@@ -55,6 +57,19 @@ return (
     Generating question...
   </div>
 )}
+
+  <div className="difficulty-filter">
+  <label>Select Difficulty:</label>
+
+  <select
+    value={difficulty}
+    onChange={(e) => setDifficulty(e.target.value)}
+  >
+    <option value="Easy">Easy</option>
+    <option value="Medium">Medium</option>
+    <option value="Hard">Hard</option>
+  </select>
+</div>
 
     <div className="topics-grid">
 

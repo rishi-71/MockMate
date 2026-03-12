@@ -57,3 +57,46 @@
   border-radius: 6px;
   color: #00ff88;
 }
+.hint-box{
+  margin-top:20px;
+  padding:15px;
+  background:#1a1a1a;
+  border-left:4px solid #ff7a18;
+  border-radius:6px;
+}
+
+.hint-box h3{
+  color:#ff7a18;
+}
+
+.hint-btn{
+  background:#222;
+  border:1px solid #ff7a18;
+}
+
+.tabs{
+display:flex;
+gap:10px;
+margin-bottom:15px;
+}
+
+.tabs button{
+background:#1e1e1e;
+border:none;
+padding:8px 15px;
+cursor:pointer;
+color:white;
+border-radius:6px;
+}
+
+.active-tab{
+background:#ff7a18;
+color:white;
+}
+
+.testcase{
+background:#1a1a1a;
+padding:10px;
+margin-bottom:10px;
+border-radius:6px;
+}

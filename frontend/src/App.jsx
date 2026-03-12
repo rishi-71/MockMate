@@ -13,6 +13,7 @@ import TheoryQuiz from "./Pages/TheoryQuiz";
 import TheoryHome from "./Pages/CodingHome";
 import CodingPractice from "./Pages/CodingPractice";
 import Landing from "./Pages/Landing";
+import ProtectedRoute from "./components/Protected";
 
 function App() {
   const [theme, setTheme] = useState("dark");
@@ -70,57 +71,71 @@ function App() {
           <Route
             path="/dashboard"
             element={
+              <ProtectedRoute>
               <PageWrapper>
                 <Dashboard setTheme={setTheme} theme={theme} />
               </PageWrapper>
+              </ProtectedRoute>
             }
           />
           <Route
             path="/coding"
             element={
+              <ProtectedRoute>
               <PageWrapper>
                 <CodingHome />
               </PageWrapper>
+              </ProtectedRoute>
             }
           />
           <Route
             path="/coding/quiz/:topicId"
             element={
+              <ProtectedRoute>
               <PageWrapper>
                 <CodingPractice />
               </PageWrapper>
+              </ProtectedRoute>
             }
           />
           <Route
             path="/theory"
             element={
+              <ProtectedRoute>
               <PageWrapper>
                 <TheoryQuiz />
               </PageWrapper>
+              </ProtectedRoute>
             }
           />
           <Route
             path="/theory/quiz/:modulateId"
             element={
+              <ProtectedRoute>
               <PageWrapper>
                 <TheoryQuiz />
               </PageWrapper>
+              </ProtectedRoute>
             }
           />
           <Route
             path="/results"
             element={
+              <ProtectedRoute>
               <PageWrapper>
                 <Result />
               </PageWrapper>
+              </ProtectedRoute>
             }
           />
           <Route
             path="/coding/practice"
             element={
+              <ProtectedRoute>
               <PageWrapper>
                 <CodingPractice />
               </PageWrapper>
+              </ProtectedRoute>
             }
           />
         </Routes>
