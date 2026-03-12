@@ -1,7 +1,7 @@
 import Topic from "../models/Topic.js";
 import Question from "../models/Question.js";
 import Result from "../models/Result.js";
-import { generateHint } from "../lib/gemini.js";
+// import { generateHint } from "../lib/gemini.js";
 import CodingResult from "../models/CodingResult.js";
 
 
@@ -19,24 +19,24 @@ export const getQuestions = async (req,res)=>{
 }
 
 
-export const getHint = async (req, res) => {
-  try {
-    const { questionId } = req.body;
+// export const getHint = async (req, res) => {
+//   try {
+//     const { questionId } = req.body;
 
-    const question = await Question.findById(questionId);
+//     const question = await Question.findById(questionId);
 
-    if (!question) {
-      return res.status(404).json({ message: "Question not found" });
-    }
+//     if (!question) {
+//       return res.status(404).json({ message: "Question not found" });
+//     }
 
-    const hint = await generateHint(question.description);
+//     const hint = await generateHint(question.description);
 
-    res.json({ hint });
-  } catch (err) {
-    console.error("HINT ERROR:", err);
-    res.status(500).json({ message: err.message });
-  }
-};
+//     res.json({ hint });
+//   } catch (err) {
+//     console.error("HINT ERROR:", err);
+//     res.status(500).json({ message: err.message });
+//   }
+// };
 export const submitAttempt = async (req,res)=>{
     const {questionId,isCorrect} = req.body;
 
@@ -62,76 +62,76 @@ export const getUserResults = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-export const generateCodeHint = async (req, res) => {
-  try {
-    const { questionId, userCode, language } = req.body;
+// export const generateCodeHint = async (req, res) => {
+//   try {
+//     const { questionId, userCode, language } = req.body;
 
-    const question = await Question.findById(questionId);
+//     const question = await Question.findById(questionId);
 
-    if (!question) {
-      return res.status(404).json({ message: "Question not found" });
-    }
+//     if (!question) {
+//       return res.status(404).json({ message: "Question not found" });
+//     }
 
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: `
-You are a coding mentor.
+//     const response = await fetch(
+//       `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+//       {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({
+//           contents: [
+//             {
+//               parts: [
+//                 {
+//                   text: `
+// You are a coding mentor.
 
-Language: ${language}
+// Language: ${language}
 
-Problem:
-${question.title}
-${question.description}
+// Problem:
+// ${question.title}
+// ${question.description}
 
-User Code:
-${userCode}
+// User Code:
+// ${userCode}
 
-Give only a hint.
-Do not provide full solution.
-                  `,
-                },
-              ],
-            },
-          ],
-        }),
-      }
-    );
+// Give only a hint.
+// Do not provide full solution.
+//                   `,
+//                 },
+//               ],
+//             },
+//           ],
+//         }),
+//       }
+//     );
 
-    const data = await response.json();
+//     const data = await response.json();
 
-    if (!response.ok) {
-      console.error("Gemini Error:", data);
-      return res.status(500).json({
-        message: data.error?.message || "Gemini API failed",
-      });
-    }
+//     if (!response.ok) {
+//       console.error("Gemini Error:", data);
+//       return res.status(500).json({
+//         message: data.error?.message || "Gemini API failed",
+//       });
+//     }
 
-    if (!data.candidates || !data.candidates.length) {
-      console.error("Invalid Gemini Response:", data);
-      return res.status(500).json({
-        message: "Invalid AI response structure",
-      });
-    }
+//     if (!data.candidates || !data.candidates.length) {
+//       console.error("Invalid Gemini Response:", data);
+//       return res.status(500).json({
+//         message: "Invalid AI response structure",
+//       });
+//     }
 
-    const hint =
-      data.candidates[0]?.content?.parts?.[0]?.text ||
-      "No hint generated.";
+//     const hint =
+//       data.candidates[0]?.content?.parts?.[0]?.text ||
+//       "No hint generated.";
 
-    res.json({ hint });
+//     res.json({ hint });
 
-  } catch (err) {
-    console.error("Code Hint Error:", err);
-    res.status(500).json({ message: "AI Error" });
-  }
-};
+//   } catch (err) {
+//     console.error("Code Hint Error:", err);
+//     res.status(500).json({ message: "AI Error" });
+//   }
+// };
 export const executeCode = async (req, res) => {
   try {
     const { code, input } = req.body;
@@ -168,7 +168,7 @@ export const executeCode = async (req, res) => {
 
 export const generateCodingQuestion = async (req, res) => {
   try {
-    const { topic } = req.body;
+    const { topic, difficulty } = req.body;
 
    console.log("Topic received",topic);
 
@@ -188,7 +188,7 @@ Rules:
 - Do NOT generate the problem "Find Maximum Element in Array".
 - Do NOT generate simple textbook problems like max element, reverse string, etc.
 - The problem must involve an algorithm related to the topic.
-- Difficulty: Medium.
+- Difficulty: ${difficulty}.
 
 Return JSON only:
 
@@ -395,5 +395,61 @@ const score = isCorrect ? 10 : 0;
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Submission failed" });
+  }
+};
+export const generateHint = async (req, res) => {
+  try {
+
+    const { question, userCode } = req.body;
+
+    const prompt = `
+You are a coding mentor.
+
+Problem:
+${question.title}
+
+Description:
+${question.description}
+
+User's Code:
+${userCode}
+
+Your task:
+- Analyze the user's partial solution
+- Give a helpful hint
+- DO NOT provide the full solution
+- Only guide the user
+
+Example:
+"Consider using a stack to maintain characters in lexicographical order."
+
+Return ONLY the hint.
+`;
+
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }]
+        })
+      }
+    );
+
+    const data = await response.json();
+
+    const hint =
+      data.candidates?.[0]?.content?.parts?.[0]?.text || "No hint generated.";
+
+    res.json({ hint });
+
+  } catch (err) {
+
+    console.error("Hint Error:", err);
+    res.status(500).json({ message: "Hint generation failed" });
+
   }
 };

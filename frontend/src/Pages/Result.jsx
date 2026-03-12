@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "../api/axios";
+import "../styles/result.css";
 
 const Result = () => {
 
@@ -34,28 +35,69 @@ const Result = () => {
   }, []);
 
   return (
-    <div className="container">
+    <div className="results-container">
 
-      <h2>Quiz History</h2>
+      {/* QUIZ HISTORY */}
+      <div className="results-card">
+        <h2>Quiz History</h2>
 
-      {quizResults.map((q, i) => (
-        <div key={i} className="result-card">
-          <p>Score: {q.score} / {q.total}</p>
-          <p>Date: {new Date(q.createdAt).toLocaleString()}</p>
-        </div>
-      ))}
+        <table>
+          <thead>
+            <tr>
+              <th>Score</th>
+              <th>Total</th>
+              <th>Date</th>
+            </tr>
+          </thead>
 
-      <h2 style={{ marginTop: "30px" }}>Coding History</h2>
+          <tbody>
+            {quizResults.map((q,i)=>(
+              <tr key={i}>
+                <td>{q.score}</td>
+                <td>{q.total}</td>
+                <td>{new Date(q.createdAt).toLocaleString()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
 
-      {codingResults.map((c, i) => (
-        <div key={i} className="result-card">
-          <p><b>{c.question.title}</b></p>
-          <p>Status: {c.isCorrect ? "Accepted" : "Wrong"}</p>
-          <p>Passed: {c.passed} / {c.total}</p>
-          <p>Score: {c.score}</p>
-          <p>Date: {new Date(c.createdAt).toLocaleString()}</p>
-        </div>
-      ))}
+      </div>
+
+      {/* CODING HISTORY */}
+      <div className="results-card">
+        <h2>Coding History</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Problem</th>
+              <th>Status</th>
+              <th>Passed</th>
+              <th>Score</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {codingResults.map((c,i)=>(
+              <tr key={i}>
+                <td>{c.question.title}</td>
+
+                <td>
+                  <span className={c.isCorrect ? "status accepted" : "status wrong"}>
+                    {c.isCorrect ? "Accepted" : "Wrong"}
+                  </span>
+                </td>
+
+                <td>{c.passed}/{c.total}</td>
+                <td>{c.score}</td>
+                <td>{new Date(c.createdAt).toLocaleString()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+      </div>
 
     </div>
   );

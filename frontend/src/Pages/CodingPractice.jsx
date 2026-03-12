@@ -7,9 +7,12 @@ const CodingPractice = () => {
   const [question, setQuestion] = useState(null);
   const [code, setCode] = useState("");
   const [output, setOutput] = useState("");
-  const [input, setInput] = useState("");
+  //const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [submissionResult, setSubmissionResult] = useState(null);
+  const [hint,setHint] = useState("");
+  const [hintLoading, setHintLoading] = useState(false);
+  const [activeTab , setActiveTab] = useState("problem");
 
   const token = localStorage.getItem("token");
 
@@ -97,24 +100,119 @@ const runCode = async () => {
   }
 
 };
+
+const getHint = async () => {
+
+  try {
+
+    setHintLoading(true);
+
+    const res = await axios.post(
+      "/coding/hint",
+      {
+        question,
+        userCode: code
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    );
+
+    setHint(res.data.hint);
+
+  } catch (err) {
+    console.error(err);
+  } finally {
+    setHintLoading(false);
+  }
+};
   return (
   <div className="coding-container">
 
+    <div className="tabs">
+
+<button
+className={activeTab==="problem" ? "active-tab" : ""}
+onClick={()=>setActiveTab("problem")}
+>
+Problem
+</button>
+
+<button
+className={activeTab==="testcases" ? "active-tab" : ""}
+onClick={()=>setActiveTab("testcases")}
+>
+Testcases
+</button>
+
+<button
+className={activeTab==="output" ? "active-tab" : ""}
+onClick={()=>setActiveTab("output")}
+>
+Output
+</button>
+
+<button
+className={activeTab==="hint" ? "active-tab" : ""}
+onClick={()=>setActiveTab("hint")}
+>
+Hint
+</button>
+
+</div>
+
+
     {/* LEFT SIDE - Problem */}
-    <div className="problem-section">
+    {/* <div className="problem-section">
       <h2>{question.title}</h2>
       <p>{question.description}</p>
     </div>
 
-    <h3 style={{ marginTop: "20px" }}>Test Cases</h3>
 
-{question.testCases.map((t, index) => (
+    <h3 style={{ marginTop: "20px" }}>Test Cases</h3> */}
+
+    {activeTab === "problem" && (
+  <div>
+    <h2>{question.title}</h2>
+    <p>{question.description}</p>
+  </div>
+)}
+
+{activeTab === "testcases" && (
+  <div>
+    <h3>Test Cases</h3>
+
+    {question.testCases.map((t,i)=>(
+      <div key={i} className="testcase">
+        <p><b>Input:</b> {t.input}</p>
+        <p><b>Expected:</b> {t.expectedOutput}</p>
+      </div>
+    ))}
+
+  </div>
+)}
+
+{activeTab === "output" && output && (
+  <div>
+    <h3>Execution Output</h3>
+    <pre>{output}</pre>
+  </div>
+)}
+
+{activeTab === "hint" && hint && (
+  <div className="hint-box">
+    <h3>AI Hint</h3>
+    <p>{hint}</p>
+  </div>
+)}
+
+{/* {question.testCases.map((t, index) => (
   <div key={index} className="testcase-box">
     <strong>Test Case {index + 1}</strong>
     <p><b>Input:</b> {t.input}</p>
     <p><b>Expected:</b> {t.expectedOutput}</p>
   </div>
-))}
+))} */}
 
     {/* RIGHT SIDE - Editor */}
     <div className="editor-section">
@@ -130,6 +228,12 @@ const runCode = async () => {
           automaticLayout: true,
         }}
       />
+      {hint && (
+  <div className="hint-box">
+    <h3>AI Hint</h3>
+    <p>{hint}</p>
+  </div>
+)}
 
      
 
@@ -148,6 +252,15 @@ const runCode = async () => {
       >
         Submit Solution
       </button>
+
+        <button
+  className="btn hint-btn"
+  onClick={getHint}
+  style={{ marginTop: "10px" }}
+>
+  {hintLoading ? "Generating Hint..." : "Get AI Hint"}
+</button>
+
 {Array.isArray(output) && (
   <div className="output-box">
     <h3>Test Results</h3>
