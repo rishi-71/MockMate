@@ -35,13 +35,13 @@ padding:30px;
 border-radius:10px;
 border:1px solid #222;
 cursor:pointer;
-transition:0.3s;
+transition:all .3s ease;
 }
 
 .dashboard-card:hover{
 transform:translateY(-5px);
 border:1px solid #ff7a00;
-box-shadow:0 5px 20px rgba(255,122,0,0.2);
+box-shadow:0 -px 20px rgba(255,122,0,0.2);
 }
 
 .dashboard-card h2{
@@ -52,4 +52,28 @@ color:#ff7a00;
 .dashboard-card p{
 color:#bbb;
 font-size:14px;
+}
+.stats-container{
+display:flex;
+gap:20px;
+justify-content:center;
+margin:40px 0;
+}
+
+.stat-card{
+background:#111;
+border:1px solid #222;
+padding:25px 40px;
+border-radius:10px;
+text-align:center;
+}
+
+.stat-card h3{
+font-size:32px;
+color:#ff7a18;
+margin-bottom:5px;
+}
+
+.stat-card p{
+color:#aaa;
 }

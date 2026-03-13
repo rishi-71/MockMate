@@ -126,96 +126,100 @@ const getHint = async () => {
     setHintLoading(false);
   }
 };
-  return (
+ return (
   <div className="coding-container">
 
-    <div className="tabs">
-
-<button
-className={activeTab==="problem" ? "active-tab" : ""}
-onClick={()=>setActiveTab("problem")}
->
-Problem
-</button>
-
-<button
-className={activeTab==="testcases" ? "active-tab" : ""}
-onClick={()=>setActiveTab("testcases")}
->
-Testcases
-</button>
-
-<button
-className={activeTab==="output" ? "active-tab" : ""}
-onClick={()=>setActiveTab("output")}
->
-Output
-</button>
-
-<button
-className={activeTab==="hint" ? "active-tab" : ""}
-onClick={()=>setActiveTab("hint")}
->
-Hint
-</button>
-
-</div>
-
-
     {/* LEFT SIDE - Problem */}
-    {/* <div className="problem-section">
+    <div className="problem-section">
+
       <h2>{question.title}</h2>
-      <p>{question.description}</p>
+
+      {/* Tabs */}
+      <div className="problem-tabs">
+
+        <button
+          className={activeTab === "problem" ? "active-tab" : ""}
+          onClick={() => setActiveTab("problem")}
+        >
+          Problem
+        </button>
+
+        <button
+          className={activeTab === "testcases" ? "active-tab" : ""}
+          onClick={() => setActiveTab("testcases")}
+        >
+          Testcases
+        </button>
+
+        <button
+          className={activeTab === "output" ? "active-tab" : ""}
+          onClick={() => setActiveTab("output")}
+        >
+          Output
+        </button>
+
+        <button
+          className={activeTab === "hint" ? "active-tab" : ""}
+          onClick={() => setActiveTab("hint")}
+        >
+          Hint
+        </button>
+
+      </div>
+
+      {/* Tab Content */}
+
+      {activeTab === "problem" && (
+        <div className="problem-content">
+          <p>{question.description}</p>
+        </div>
+      )}
+
+      {activeTab === "testcases" && (
+        <div>
+          {question.testCases.map((t, index) => (
+            <div key={index} className="testcase-box">
+              <strong>Test Case {index + 1}</strong>
+              <p><b>Input:</b> {t.input}</p>
+              <p><b>Expected:</b> {t.expectedOutput}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {activeTab === "output" && Array.isArray(output) && (
+        <div className="output-box">
+          <h3>Execution Results</h3>
+
+          {output.map((r, i) => (
+            <div key={i} className="test-result">
+              <strong>Test Case {i + 1}</strong>
+
+              <p>Input: {r.input}</p>
+              <p>Expected: {r.expected}</p>
+              <p>Your Output: {r.output}</p>
+
+              <p style={{ color: r.passed ? "#00ff88" : "#ff4d4d" }}>
+                {r.passed ? "Passed" : "Failed"}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {activeTab === "hint" && hint && (
+        <div className="hint-box">
+          <h3>AI Hint</h3>
+          <p>{hint}</p>
+        </div>
+      )}
+
     </div>
 
 
-    <h3 style={{ marginTop: "20px" }}>Test Cases</h3> */}
-
-    {activeTab === "problem" && (
-  <div>
-    <h2>{question.title}</h2>
-    <p>{question.description}</p>
-  </div>
-)}
-
-{activeTab === "testcases" && (
-  <div>
-    <h3>Test Cases</h3>
-
-    {question.testCases.map((t,i)=>(
-      <div key={i} className="testcase">
-        <p><b>Input:</b> {t.input}</p>
-        <p><b>Expected:</b> {t.expectedOutput}</p>
-      </div>
-    ))}
-
-  </div>
-)}
-
-{activeTab === "output" && output && (
-  <div>
-    <h3>Execution Output</h3>
-    <pre>{output}</pre>
-  </div>
-)}
-
-{activeTab === "hint" && hint && (
-  <div className="hint-box">
-    <h3>AI Hint</h3>
-    <p>{hint}</p>
-  </div>
-)}
-
-{/* {question.testCases.map((t, index) => (
-  <div key={index} className="testcase-box">
-    <strong>Test Case {index + 1}</strong>
-    <p><b>Input:</b> {t.input}</p>
-    <p><b>Expected:</b> {t.expectedOutput}</p>
-  </div>
-))} */}
-
     {/* RIGHT SIDE - Editor */}
     <div className="editor-section">
+
       <Editor
         height="400px"
         language="cpp"
@@ -228,14 +232,6 @@ Hint
           automaticLayout: true,
         }}
       />
-      {hint && (
-  <div className="hint-box">
-    <h3>AI Hint</h3>
-    <p>{hint}</p>
-  </div>
-)}
-
-     
 
       <button
         className="btn"
@@ -253,33 +249,13 @@ Hint
         Submit Solution
       </button>
 
-        <button
-  className="btn hint-btn"
-  onClick={getHint}
-  style={{ marginTop: "10px" }}
->
-  {hintLoading ? "Generating Hint..." : "Get AI Hint"}
-</button>
-
-{Array.isArray(output) && (
-  <div className="output-box">
-    <h3>Test Results</h3>
-
-    {output.map((r, i) => (
-      <div key={i} className="test-result">
-        <strong>Test Case {i + 1}</strong>
-
-        <p>Input: {r.input}</p>
-        <p>Expected: {r.expected}</p>
-        <p>Your Output: {r.output}</p>
-
-        <p style={{ color: r.passed ? "#00ff88" : "#ff4d4d" }}>
-          {r.passed ? "Passed" : "Failed"}
-        </p>
-      </div>
-    ))}
-  </div>
-)}
+      <button
+        className="btn hint-btn"
+        onClick={getHint}
+        style={{ marginTop: "10px" }}
+      >
+        {hintLoading ? "Generating Hint..." : "Get AI Hint"}
+      </button>
 
       {submissionResult && (
         <div
@@ -295,14 +271,17 @@ Hint
           <strong>
             {submissionResult.isCorrect ? "Accepted ✅" : "Wrong Answer ❌"}
           </strong>
+
           <p>
-            Passed {submissionResult.passed} / {submissionResult.total} test cases
+            Passed {submissionResult.passed} / {submissionResult.total}
           </p>
+
           <p>Score: {submissionResult.score}</p>
         </div>
       )}
 
     </div>
+
   </div>
 );
   
