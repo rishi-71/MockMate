@@ -1,0 +1,116 @@
+.ai-tutor{
+max-width:900px;
+margin:auto;
+padding:40px 20px;
+color:white;
+}
+
+.ai-title{
+font-size:36px;
+text-align:center;
+color:#ff7a18;
+margin-bottom:10px;
+}
+
+.ai-subtitle{
+text-align:center;
+color:#aaa;
+margin-bottom:30px;
+}
+
+.ai-search-box{
+display:flex;
+gap:10px;
+justify-content:center;
+margin-bottom:20px;
+}
+
+.ai-search-box input{
+width:400px;
+padding:12px;
+border-radius:6px;
+border:1px solid #333;
+background:#111;
+color:white;
+}
+
+.ai-btn{
+background:#ff7a18;
+border:none;
+padding:12px 18px;
+border-radius:6px;
+cursor:pointer;
+color:white;
+font-weight:500;
+}
+
+.ai-btn:hover{
+background:#ff8f2f;
+}
+
+.ai-upload{
+display:flex;
+gap:10px;
+justify-content:center;
+margin-bottom:30px;
+}
+
+.ai-upload input{
+color:white;
+}
+
+.ai-result{
+background:#111;
+border:1px solid #222;
+border-radius:10px;
+padding:25px;
+margin-top:30px;
+}
+
+.ai-result h2{
+color:#ff7a18;
+margin-bottom:15px;
+}
+
+.ai-result pre{
+white-space:pre-wrap;
+line-height:1.6;
+font-family:inherit;
+color:#ddd;
+}
+
+
+.notes-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+}
+
+.notes-header h2{
+color:#ff7a18;
+}
+
+.download-btn{
+background:#1f6feb;
+border:none;
+padding:8px 14px;
+border-radius:6px;
+color:white;
+cursor:pointer;
+}
+
+.download-btn:hover{
+background:#2f81f7;
+}
+
+.notes-content h3{
+margin-top:18px;
+color:#ff7a18;
+}
+
+.notes-content p{
+color:#ddd;
+line-height:1.6;
+margin-top:6px;
+}
