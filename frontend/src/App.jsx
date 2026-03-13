@@ -14,6 +14,7 @@ import TheoryHome from "./Pages/CodingHome";
 import CodingPractice from "./Pages/CodingPractice";
 import Landing from "./Pages/Landing";
 import ProtectedRoute from "./components/Protected";
+import AITutor from "./Pages/AITutor";
 
 function App() {
   const [theme, setTheme] = useState("dark");
@@ -138,6 +139,11 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/ai-tutor" element={<ProtectedRoute>
+              <PageWrapper>
+                <AITutor />
+              </PageWrapper>
+              </ProtectedRoute>} />
         </Routes>
       </AnimatePresence>
     </>

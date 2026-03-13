@@ -7,6 +7,7 @@ import authRoutes from "./routes/authRoutes.js";
 import codingRoutes from "./routes/codingRoutes.js";
 import theoryRoutes from "./routes/theoryRoutes.js";
 import resultRoutes from "./routes/resultRoutes.js";
+import aiRoutes from "./routes/aiRoutes.js";
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use("/api/auth",authRoutes);
 //app.use("/api/coding",codingRoutes);
 //app.use("/api",resultRoutes);
+app.use("/api/ai",aiRoutes);
 
 // routes
 //app.use("/api/auth", authRoutes);

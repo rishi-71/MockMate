@@ -86,6 +86,16 @@ const Dashboard = () => {
           <p>Generate quizzes from your syllabus and test your understanding.</p>
         </div>
 
+        <div
+className="dashboard-card"
+onClick={() => navigate("/ai-tutor")}
+>
+<h2>🤖 AI Tutor</h2>
+<p>
+Learn any computer science topic with AI explanations.
+</p>
+</div>
+
         <div className="dashboard-card" onClick={() => navigate("/results")}>
           <h2>📊 Results</h2>
           <p>Track your progress and view solved problems.</p>
