@@ -32,7 +32,7 @@ const Login = () => {
 
       login(res.data);
 
-      alert(res.data.message || "Login successful");
+      //alert(res.data.message || "Login successful");
 
       navigate("/dashboard");
 
@@ -41,7 +41,7 @@ const Login = () => {
       console.log(err);
 
       if (err.response?.data?.message) {
-        alert(err.response.data.message);
+       // alert(err.response.data.message);
       } else {
         alert("Login failed");
       }
