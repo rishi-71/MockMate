@@ -59,3 +59,17 @@
   cursor: pointer;
   font-size: 16px;
 }
+.difficulty-select{
+margin:15px 0;
+display:flex;
+gap:10px;
+align-items:center;
+}
+
+.difficulty-select select{
+padding:6px 10px;
+background:#111;
+color:white;
+border:1px solid #333;
+border-radius:6px;
+}

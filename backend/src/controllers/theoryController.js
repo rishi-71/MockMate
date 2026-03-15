@@ -4,10 +4,10 @@ import QuizResult from "../models/QuizResult.js";
 
 export const generateQuiz = async (req, res) => {
   try {
-    const { syllabus } = req.body;
+    const { syllabus,difficulty } = req.body;
 
     const prompt = `
-Generate 5 MCQ questions from this syllabus:
+Generate 5 ${difficulty} level MCQ questions from this syllabus:
 
 ${syllabus}
 
@@ -73,6 +73,10 @@ questions.forEach(q=>{
 if(q.userAnswer?.trim() === q.correctAnswer?.trim()){
 score++;
 }
+});
+
+questions.forEach(q=>{
+  q.isCorrect = q.userAnswer === q.correctAnswer;
 });
 
 const result = await QuizResult.create({

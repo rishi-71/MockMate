@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+//import { useNavigate } from "react-router-dom";
 import axios from "../api/axios";
 import "../styles/theory.css";
 
@@ -10,6 +10,7 @@ const TheoryQuiz = () => {
   const [file, setFile] = useState(null);
  // const navigate = useNavigate();
   const [result,setResult] = useState(null);
+  const [difficulty,setDifficulty] = useState("Easy");
 
   const token = localStorage.getItem("token");
 
@@ -17,7 +18,7 @@ const TheoryQuiz = () => {
     try {
       const res = await axios.post(
         "/theory/generate",
-        { syllabus },
+        { syllabus , difficulty},
         {
           headers: { Authorization: `Bearer ${token}` },
         },
@@ -102,6 +103,23 @@ const TheoryQuiz = () => {
 Generate From File
 </button>
 
+<div className="difficulty-select">
+
+<label>Difficulty:</label>
+
+<select
+value={difficulty}
+onChange={(e)=>setDifficulty(e.target.value)}
+>
+
+<option value="Easy">Easy</option>
+<option value="Medium">Medium</option>
+<option value="Hard">Hard</option>
+
+</select>
+
+</div>
+
       <button className="generate-btn" onClick={generateQuiz}>
         Generate Quiz
       </button>
@@ -152,6 +170,8 @@ Score: {result.score} / {result.total}
 <p>Your Answer: {q.userAnswer}</p>
 
 <p>Correct Answer: {q.correctAnswer}</p>
+
+{/* const isCorrect = q.userAnswer === q.correctAnswer; */}
 
 <p style={{
 color:q.isCorrect ? "lightgreen":"red"
