@@ -1,290 +1,241 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import axios from "../api/axios";
 import Editor from "@monaco-editor/react";
+import { ThemeContext } from "../context/ThemeContext";
 import "../styles/coding.css";
 
 const CodingPractice = () => {
   const [question, setQuestion] = useState(null);
   const [code, setCode] = useState("");
   const [output, setOutput] = useState("");
-  //const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [submissionResult, setSubmissionResult] = useState(null);
-  const [hint,setHint] = useState("");
+  const [hint, setHint] = useState("");
   const [hintLoading, setHintLoading] = useState(false);
-  const [activeTab , setActiveTab] = useState("problem");
+  const [activeTab, setActiveTab] = useState("problem");
 
+  const { theme } = useContext(ThemeContext); // Use global theme for the editor
   const token = localStorage.getItem("token");
 
   // Load AI generated question
-useEffect(() => {
-  const savedQuestion = localStorage.getItem("currentCodingQuestion");
-
-  if (savedQuestion) {
-    const parsed = JSON.parse(savedQuestion);
-    console.log("Loaded Question:", parsed);
-    setQuestion(parsed);
-    setCode(parsed.template);
-  }
-}, []);
-
-const runCode = async () => {
-
-  try {
-
-    setLoading(true);
-    let results = [];
-
-    for (let i = 0; i < question.testCases.length; i++) {
-
-      const test = question.testCases[i];
-
-      const res = await axios.post(
-        "/coding/execute",
-        {
-          code,
-          input: test.input
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-
-      const output = res.data.stdout?.trim();
-      const expected = test.expectedOutput.trim();
-
-      results.push({
-        input: test.input,
-        expected,
-        output,
-        passed: output === expected
-      });
+  useEffect(() => {
+    const savedQuestion = localStorage.getItem("currentCodingQuestion");
+    if (savedQuestion) {
+      const parsed = JSON.parse(savedQuestion);
+      setQuestion(parsed);
+      setCode(parsed.template);
     }
+  }, []);
 
-    setOutput(results);
+  const runCode = async () => {
+    try {
+      setLoading(true);
+      setActiveTab("output"); // Automatically switch to output tab
+      let results = [];
 
-  } catch (err) {
+      for (let i = 0; i < question.testCases.length; i++) {
+        const test = question.testCases[i];
+        const res = await axios.post(
+          "/coding/execute",
+          { code, input: test.input },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
 
-    console.error(err);
+        const output = res.data.stdout?.trim() || "";
+        const expected = test.expectedOutput.trim();
 
-  } finally {
+        results.push({
+          input: test.input,
+          expected,
+          output,
+          passed: output === expected
+        });
+      }
+      setOutput(results);
+      setSubmissionResult(null); // Clear previous submission result
+    } catch (err) {
+      console.error(err);
+      setOutput([{ input: "Error", expected: "-", output: "Execution Failed", passed: false }]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    setLoading(false);
-
-  }
-};
-
-  if (!question) return <div className="container">Loading...</div>;
-  
   const submitSolution = async () => {
-    console.log("Submit Button Clicked");
-  try {
-    const res = await axios.post(
-      "/coding/submit",
-      {
-        question,
-        code
-      },
-      {
-        headers: { Authorization: `Bearer ${token}` }
-      }
-    );
-    console.log("Submission Response: ",res.data);
+    try {
+      setLoading(true);
+      setActiveTab("output");
+      const res = await axios.post(
+        "/coding/submit",
+        { question, code },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setSubmissionResult(res.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    setSubmissionResult(res.data);
+  const getHint = async () => {
+    try {
+      setHintLoading(true);
+      setActiveTab("hint"); // Automatically switch to hint tab
+      const res = await axios.post(
+        "/coding/hint",
+        { question, userCode: code },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setHint(res.data.hint);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setHintLoading(false);
+    }
+  };
 
-  } catch (err) {
-    console.error(err);
-  }
+  if (!question) return <div className="loading-screen">Loading Workspace...</div>;
 
-};
+  return (
+    <div className="coding-workspace">
+      
+      {/* LEFT SIDE - Problem Description & Output */}
+      <div className="problem-section">
+        
+        <div className="problem-header">
+          <h2>{question.title}</h2>
+          <span className="difficulty-badge">{question.difficulty || "Medium"}</span>
+        </div>
 
-const getHint = async () => {
+        {/* Tabs */}
+        <div className="problem-tabs">
+          <button className={activeTab === "problem" ? "active-tab" : ""} onClick={() => setActiveTab("problem")}>
+            Description
+          </button>
+          <button className={activeTab === "testcases" ? "active-tab" : ""} onClick={() => setActiveTab("testcases")}>
+            Testcases
+          </button>
+          <button className={activeTab === "output" ? "active-tab" : ""} onClick={() => setActiveTab("output")}>
+            Result
+          </button>
+          <button className={activeTab === "hint" ? "active-tab" : ""} onClick={() => setActiveTab("hint")}>
+            AI Hint
+          </button>
+        </div>
 
-  try {
+        {/* Tab Content */}
+        <div className="tab-content-area">
+          {activeTab === "problem" && (
+            <div className="problem-content">
+              <p>{question.description}</p>
+            </div>
+          )}
 
-    setHintLoading(true);
+          {activeTab === "testcases" && (
+            <div className="testcase-list">
+              {question.testCases.map((t, index) => (
+                <div key={index} className="testcase-box">
+                  <div className="testcase-header">Test Case {index + 1}</div>
+                  <div className="testcase-body">
+                    <p className="io-label">Input:</p>
+                    <pre>{t.input}</pre>
+                    <p className="io-label">Expected Output:</p>
+                    <pre>{t.expectedOutput}</pre>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
 
-    const res = await axios.post(
-      "/coding/hint",
-      {
-        question,
-        userCode: code
-      },
-      {
-        headers: { Authorization: `Bearer ${token}` }
-      }
-    );
+          {activeTab === "output" && (
+            <div className="output-section">
+              {loading && <div className="running-text">Executing code...</div>}
+              
+              {/* Submission Result (Final verdict) */}
+              {submissionResult && (
+                <div className={`verdict-box ${submissionResult.isCorrect ? "success" : "error"}`}>
+                  <h3>{submissionResult.isCorrect ? "Accepted ✅" : "Wrong Answer ❌"}</h3>
+                  <p>Passed {submissionResult.passed} / {submissionResult.total} test cases</p>
+                  <p>Score Awarded: {submissionResult.score}</p>
+                </div>
+              )}
 
-    setHint(res.data.hint);
+              {/* Standard Run Output */}
+              {!loading && Array.isArray(output) && output.map((r, i) => (
+                <div key={i} className={`result-box ${r.passed ? "passed" : "failed"}`}>
+                  <div className="result-header">
+                    <strong>Test Case {i + 1}</strong>
+                    <span>{r.passed ? "Passed" : "Failed"}</span>
+                  </div>
+                  <div className="result-body">
+                    <p className="io-label">Input:</p>
+                    <pre>{r.input}</pre>
+                    <p className="io-label">Expected:</p>
+                    <pre>{r.expected}</pre>
+                    <p className="io-label">Your Output:</p>
+                    <pre>{r.output || "No output"}</pre>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
 
-  } catch (err) {
-    console.error(err);
-  } finally {
-    setHintLoading(false);
-  }
-};
- return (
-  <div className="coding-container">
-
-    {/* LEFT SIDE - Problem */}
-    <div className="problem-section">
-
-      <h2>{question.title}</h2>
-
-      {/* Tabs */}
-      <div className="problem-tabs">
-
-        <button
-          className={activeTab === "problem" ? "active-tab" : ""}
-          onClick={() => setActiveTab("problem")}
-        >
-          Problem
-        </button>
-
-        <button
-          className={activeTab === "testcases" ? "active-tab" : ""}
-          onClick={() => setActiveTab("testcases")}
-        >
-          Testcases
-        </button>
-
-        <button
-          className={activeTab === "output" ? "active-tab" : ""}
-          onClick={() => setActiveTab("output")}
-        >
-          Output
-        </button>
-
-        <button
-          className={activeTab === "hint" ? "active-tab" : ""}
-          onClick={() => setActiveTab("hint")}
-        >
-          Hint
-        </button>
-
+          {activeTab === "hint" && (
+            <div className="hint-content">
+              {hintLoading ? (
+                <div className="running-text">AI is analyzing your code...</div>
+              ) : hint ? (
+                <div className="ai-hint-box">
+                  <h3>🤖 AI Tutor Suggestion</h3>
+                  <p>{hint}</p>
+                </div>
+              ) : (
+                <p className="placeholder-text">Click "Get AI Hint" to receive guidance without giving away the answer.</p>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Tab Content */}
-
-      {activeTab === "problem" && (
-        <div className="problem-content">
-          <p>{question.description}</p>
+      {/* RIGHT SIDE - Code Editor */}
+      <div className="editor-section">
+        <div className="editor-wrapper">
+          <Editor
+            height="100%" /* Stretches to fill wrapper */
+            language="cpp"
+            theme={theme === "light" ? "light" : "vs-dark"}
+            value={code}
+            onChange={(value) => setCode(value)}
+            options={{
+              fontSize: 15,
+              minimap: { enabled: false },
+              automaticLayout: true,
+              scrollBeyondLastLine: false,
+              padding: { top: 16 }
+            }}
+          />
         </div>
-      )}
 
-      {activeTab === "testcases" && (
-        <div>
-          {question.testCases.map((t, index) => (
-            <div key={index} className="testcase-box">
-              <strong>Test Case {index + 1}</strong>
-              <p><b>Input:</b> {t.input}</p>
-              <p><b>Expected:</b> {t.expectedOutput}</p>
-            </div>
-          ))}
+        {/* Action Controls Bar */}
+        <div className="editor-controls">
+          <button className="btn-hint" onClick={getHint} disabled={hintLoading || loading}>
+            {hintLoading ? "Thinking..." : "Get AI Hint"}
+          </button>
+          
+          <div className="action-buttons">
+            <button className="btn-run" onClick={runCode} disabled={loading}>
+              Run Code
+            </button>
+            <button className="btn-submit" onClick={submitSolution} disabled={loading}>
+              Submit
+            </button>
+          </div>
         </div>
-      )}
-
-      {activeTab === "output" && Array.isArray(output) && (
-        <div className="output-box">
-          <h3>Execution Results</h3>
-
-          {output.map((r, i) => (
-            <div key={i} className="test-result">
-              <strong>Test Case {i + 1}</strong>
-
-              <p>Input: {r.input}</p>
-              <p>Expected: {r.expected}</p>
-              <p>Your Output: {r.output}</p>
-
-              <p style={{ color: r.passed ? "#00ff88" : "#ff4d4d" }}>
-                {r.passed ? "Passed" : "Failed"}
-              </p>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {activeTab === "hint" && hint && (
-        <div className="hint-box">
-          <h3>AI Hint</h3>
-          <p>{hint}</p>
-        </div>
-      )}
+      </div>
 
     </div>
-
-
-    {/* RIGHT SIDE - Editor */}
-    <div className="editor-section">
-
-      <Editor
-        height="400px"
-        language="cpp"
-        theme="vs-dark"
-        value={code}
-        onChange={(value) => setCode(value)}
-        options={{
-          fontSize: 14,
-          minimap: { enabled: false },
-          automaticLayout: true,
-        }}
-      />
-
-      <button
-        className="btn"
-        onClick={runCode}
-        style={{ marginTop: "10px" }}
-      >
-        {loading ? "Running..." : "Run Code"}
-      </button>
-
-      <button
-        className="btn submit-btn"
-        onClick={submitSolution}
-        style={{ marginTop: "10px" }}
-      >
-        Submit Solution
-      </button>
-
-      <button
-        className="btn hint-btn"
-        onClick={getHint}
-        style={{ marginTop: "10px" }}
-      >
-        {hintLoading ? "Generating Hint..." : "Get AI Hint"}
-      </button>
-
-      {submissionResult && (
-        <div
-          className="result-box"
-          style={{
-            marginTop: "15px",
-            padding: "10px",
-            background: submissionResult.isCorrect ? "#123c1f" : "#3c1212",
-            color: submissionResult.isCorrect ? "#00ff88" : "#ff4d4d",
-            borderRadius: "6px"
-          }}
-        >
-          <strong>
-            {submissionResult.isCorrect ? "Accepted ✅" : "Wrong Answer ❌"}
-          </strong>
-
-          <p>
-            Passed {submissionResult.passed} / {submissionResult.total}
-          </p>
-
-          <p>Score: {submissionResult.score}</p>
-        </div>
-      )}
-
-    </div>
-
-  </div>
-);
-  
+  );
 };
 
 export default CodingPractice;
