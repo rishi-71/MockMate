@@ -1,82 +1,102 @@
 import { useState, useContext } from "react";
 import axios from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import "../styles/auth.css";
+import { useNavigate, Link } from "react-router-dom";
+import "../styles/login.css"; // Ensure this matches your CSS file name
 
 const Login = () => {
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault(); // Prevents page reload on form submit
+    setError("");
 
-    // empty validation
     if (!email || !password) {
-      alert("All fields are required");
+      setError("All fields are required");
       return;
     }
 
-    try {
+    setIsLoading(true);
 
+    try {
       const res = await axios.post("/auth/login", {
         email,
         password,
       });
 
-      // save token
       localStorage.setItem("token", res.data.token);
-
       login(res.data);
-
-      //alert(res.data.message || "Login successful");
-
       navigate("/dashboard");
-
     } catch (err) {
-
       console.log(err);
-
       if (err.response?.data?.message) {
-       // alert(err.response.data.message);
+        setError(err.response.data.message);
       } else {
-        alert("Login failed");
+        setError("Login failed. Please check your credentials.");
       }
-
+    } finally {
+      setIsLoading(false);
     }
-
   };
 
   return (
-   <div className="auth-wrapper">
+    <div className="login-container">
+      <div className="login-card">
+        
+        <div className="login-header">
+          <div className="logo mockmate-logo">MockMate</div>
+          <h2>Welcome Back</h2>
+          <p>Log in to continue your coding practice.</p>
+        </div>
 
-    <div className="card auth-card">
+        <form onSubmit={handleLogin} className="login-form">
+          {error && <div className="error-message">{error}</div>}
 
-      <h2 className="title">Login</h2>
+          <div className="form-group">
+            <label htmlFor="email">Email Address</label>
+            <input
+              id="email"
+              className="login-input"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+              autoComplete="email"
+            />
+          </div>
 
-      <input
-        className="input"
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email"
-      />
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              id="password"
+              className="login-input"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
+              autoComplete="current-password"
+            />
+          </div>
 
-      <input
-        className="input"
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
-        type="password"
-      />
+          <button type="submit" className="login-button" disabled={isLoading}>
+            {isLoading ? "Logging in..." : "Login"}
+          </button>
+        </form>
 
-      <button className="btn" onClick={handleLogin}>
-        Login
-      </button>
+        <div className="login-footer">
+          <p>
+            Don't have an account? <Link to="/register" className="login-link">Sign up</Link>
+          </p>
+        </div>
 
+      </div>
     </div>
-
-   </div>
   );
 };
 
