@@ -1,29 +1,56 @@
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:"Inter",sans-serif;
+/* index.css */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
 }
 
-html{
-scroll-behavior:smooth;
+html {
+  scroll-behavior: smooth;
 }
 
-body{
-background:#0a0f1c;
-color:#f5f5f5;
+/* src/index.css */
+
+/* --- GLOBAL THEME VARIABLES --- */
+/* GLOBAL THEME VARIABLES */
+:root, body.light {
+  /* Light Theme - Softer and peaceful */
+  --bg-primary: #f0f2f5; /* A gentle, eye-friendly off-white/gray */
+  --bg-secondary: #ffffff; /* Crisp white for the cards to pop */
+  --bg-tertiary: #e5e7eb;
+  --text-primary: #1f2937; /* Softer near-black for better reading */
+  --text-secondary: #6b7280;
+  --border-color: rgba(0, 0, 0, 0.08);
+  --accent-main: #ea580c; 
+  --accent-hover: #f97316;
+  --shadow-sm: none;
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05); /* Very soft shadow for hover */
+  
+  /* NEW: Fixes the muddy card issue */
+  --card-gradient-bottom: #f8fafc; /* Fades into a very light, clean gray */
 }
 
-:root{
+body.dark, body {
+  /* Dark Theme */
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #111111;
+  --bg-tertiary: #1a1a1a;
+  --text-primary: #ffffff;
+  --text-secondary: #9ca3af;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --accent-main: #ff6a00;
+  --accent-hover: #ff8c1a;
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 10px 40px rgba(0, 0, 0, 0.2), 0 0 20px rgba(255, 106, 0, 0.05);
+  
+  /* NEW: Keeps the dark mode depth */
+  --card-gradient-bottom: rgba(17, 17, 17, 0.5);
+}
 
---bg-main:#0a0f1c;
---bg-panel:#111827;
-
---text-primary:#f5f5f5;
---text-secondary:#9ca3af;
-
---accent:#ff6a00;
-
---border:#1f2937;
-
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }

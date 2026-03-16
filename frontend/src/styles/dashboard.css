@@ -1,79 +1,184 @@
-.dashboard{
-min-height:100vh;
-background:#0d0d0d;
-color:white;
-padding:40px;
-font-family:Arial;
+
+/* --- LAYOUT --- */
+.dashboard-container {
+  min-height: calc(100vh - 80px); 
+  /* 1. Base background */
+  background-color: var(--bg-primary);
+  /* 2. Add a massive, subtle radial glow from the top center */
+  background-image: radial-gradient(circle at 50% -20%, rgba(255, 106, 0, 0.08) 0%, transparent 70%);
+  padding: 60px 5%;
+  transition: background-color 0.3s ease;
 }
 
-.dashboard-header{
-text-align:center;
-margin-bottom:50px;
+.dashboard-content {
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.dashboard-header h1{
-color:#ff7a00;
-font-size:36px;
+/* --- HEADER --- */
+.dashboard-header {
+  margin-bottom: 40px;
 }
 
-.dashboard-header p{
-color:#aaa;
-margin-top:10px;
+.dashboard-title {
+  font-size: 38px;
+  font-weight: 800;
+  background: linear-gradient(90deg, var(--accent-main), #ff9d3b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
 }
 
-.dashboard-grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:30px;
-max-width:900px;
-margin:auto;
+.dashboard-subtitle {
+  color: var(--text-secondary);
+  font-size: 16px;
+  line-height: 1.5;
 }
 
-.dashboard-card{
-background:#111;
-padding:30px;
-border-radius:10px;
-border:1px solid #222;
-cursor:pointer;
-transition:all .3s ease;
+/* --- STATS ROW --- */
+.stats-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 50px;
 }
 
-.dashboard-card:hover{
-transform:translateY(-5px);
-border:1px solid #ff7a00;
-box-shadow:0 -px 20px rgba(255,122,0,0.2);
+/* --- STATS ROW --- */
+.stat-card {
+  /* Give the stat cards a subtle gradient instead of a flat color */
+  background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--card-gradient-bottom) 100%);
+  border: 1px solid var(--border-color);
+  /* Add a very faint highlight to the top edge */
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+  /* Optional: adds a slight blur to what's behind it */
+  backdrop-filter: blur(10px); 
 }
 
-.dashboard-card h2{
-margin-bottom:10px;
-color:#ff7a00;
+.stat-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent-main);
+  box-shadow: var(--shadow-md);
 }
 
-.dashboard-card p{
-color:#bbb;
-font-size:14px;
-}
-.stats-container{
-display:flex;
-gap:20px;
-justify-content:center;
-margin:40px 0;
-}
-
-.stat-card{
-background:#111;
-border:1px solid #222;
-padding:25px 40px;
-border-radius:10px;
-text-align:center;
+.stat-icon-wrapper {
+  background: rgba(255, 106, 0, 0.1);
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.stat-card h3{
-font-size:32px;
-color:#ff7a18;
-margin-bottom:5px;
+.stat-icon {
+  font-size: 28px;
+  color: var(--accent-main);
 }
 
-.stat-card p{
-color:#aaa;
+.stat-details h3 {
+  font-size: 32px;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  line-height: 1;
+}
+
+.stat-details p {
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* --- ACTION GRID --- */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 24px;
+}
+
+.dashboard-card {
+  /* Give the action cards the same gradient and top-highlight treatment */
+  background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--card-gradient-bottom) 100%);
+  border: 1px solid var(--border-color);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 32px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+/* The sliding left border effect on hover */
+.dashboard-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(to bottom, var(--accent-main), #ff9d3b);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.3s ease;
+}
+
+.dashboard-card:hover::before {
+  transform: scaleY(1);
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--accent-main);
+}
+
+.card-icon {
+  font-size: 36px;
+  color: var(--accent-main);
+  background: rgba(255, 106, 0, 0.05);
+  width: fit-content;
+  padding: 16px;
+  border-radius: 14px;
+}
+
+.card-text h2 {
+  font-size: 22px;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+
+.card-text p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 40px 5%;
+  }
+  
+  .dashboard-title {
+    font-size: 32px;
+  }
+  
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
 }

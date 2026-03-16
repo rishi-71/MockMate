@@ -1,13 +1,12 @@
-// 
 import { useEffect, useState } from "react";
 import axios from "../api/axios";
 import { useNavigate } from "react-router-dom";
+import { FaLaptopCode, FaSpinner } from "react-icons/fa";
 import "../styles/codingHome.css";
 
 export default function CodingHome() {
-
   const [topics, setTopics] = useState([]);
-  const [loading,setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [difficulty, setDifficulty] = useState("Medium");
   const navigate = useNavigate();
 
@@ -24,68 +23,80 @@ export default function CodingHome() {
     }
   };
 
-const handleTopicClick = async (topic) => {
-  try {
-    setLoading(true);
+  const handleTopicClick = async (topic) => {
+    try {
+      setLoading(true);
 
-    const res = await axios.post("/coding/generate", {
-      topic,
-      difficulty
-    });
+      const res = await axios.post("/coding/generate", {
+        topic,
+        difficulty
+      });
 
-    // 🔹 Save new question
-    localStorage.setItem(
-      "currentCodingQuestion",
-      JSON.stringify(res.data)
-    );
+      // Save new question
+      localStorage.setItem(
+        "currentCodingQuestion",
+        JSON.stringify(res.data)
+      );
 
-    navigate("/coding/practice");
+      navigate("/coding/practice");
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  } catch (err) {
-    console.error(err);
-  } finally {
-    setLoading(false);
-  }
-};
-
-return (
-  <div className="coding-page">
-
-    <h1 className="coding-title">Select Coding Topic</h1>
-    {loading && (
-  <div className="loading-box">
-    Generating question...
-  </div>
-)}
-
-  <div className="difficulty-filter">
-  <label>Select Difficulty:</label>
-
-  <select
-    value={difficulty}
-    onChange={(e) => setDifficulty(e.target.value)}
-  >
-    <option value="Easy">Easy</option>
-    <option value="Medium">Medium</option>
-    <option value="Hard">Hard</option>
-  </select>
-</div>
-
-    <div className="topics-grid">
-
-      {topics.map((topic) => (
-        <div
-          key={topic._id}
-          className="topic-card"
-          onClick={() => handleTopicClick(topic.name)}
-        >
-          <h3>{topic.name}</h3>
-          <p>Practice problems related to {topic.name}</p>
+  return (
+    <div className="coding-container">
+      
+      {/* LOADING OVERLAY */}
+      {loading && (
+        <div className="loading-overlay">
+          <div className="loading-content">
+            <FaSpinner className="spinner-icon" />
+            <h2>Generating Question...</h2>
+            <p>Our AI is crafting a unique {difficulty.toLowerCase()} problem for you.</p>
+          </div>
         </div>
-      ))}
+      )}
+
+      <div className="coding-header">
+        <h1 className="coding-title">Select a Coding Topic</h1>
+        <p className="coding-subtitle">Choose a data structure or algorithm to practice.</p>
+      </div>
+
+      {/* MODERN DIFFICULTY SELECTOR */}
+      <div className="difficulty-tabs">
+        {["Easy", "Medium", "Hard"].map((level) => (
+          <button
+            key={level}
+            className={`diff-tab ${difficulty === level ? "active" : ""}`}
+            onClick={() => setDifficulty(level)}
+          >
+            {level}
+          </button>
+        ))}
+      </div>
+
+      {/* TOPICS GRID */}
+      <div className="topics-grid">
+        {topics.map((topic) => (
+          <div
+            key={topic._id}
+            className="topic-card"
+            onClick={() => handleTopicClick(topic.name)}
+          >
+            <div className="topic-icon-wrapper">
+              <FaLaptopCode className="topic-icon" />
+            </div>
+            <div className="topic-info">
+              <h3>{topic.name}</h3>
+              <p>Practice {topic.name.toLowerCase()} problems</p>
+            </div>
+          </div>
+        ))}
+      </div>
 
     </div>
-
-  </div>
-);
+  );
 }

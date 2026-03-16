@@ -1,59 +1,58 @@
-/* --- REGISTER CONTAINER --- */
-.register-container {
+/* --- LOGIN CONTAINER --- */
+.login-container {
   min-height: 100vh;
   background: var(--bg-primary);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   transition: background-color 0.3s ease;
 }
 
-/* --- REGISTER CARD --- */
-.register-card {
+/* --- LOGIN CARD --- */
+.login-card {
   background: var(--bg-secondary);
   width: 100%;
   max-width: 440px;
   padding: 50px 40px;
   border-radius: 16px;
   border: 1px solid var(--border-color);
+  
+  /* Subtle glow matching your original screenshot, adapted for the theme */
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2), 0 0 20px rgba(255, 106, 0, 0.05);
   transition: all 0.3s ease;
 }
 
 /* --- HEADER --- */
-.register-header {
+.login-header {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
 }
 
 .mockmate-logo {
   font-size: 28px;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   display: inline-block;
-  font-weight: 800;
-  background: linear-gradient(90deg, var(--accent-main), #ff9d3b);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 
-.register-header h2 {
+.login-header h2 {
   font-size: 24px;
   color: var(--text-primary);
   margin-bottom: 8px;
   font-weight: 600;
 }
 
-.register-header p {
+.login-header p {
   color: var(--text-secondary);
   font-size: 15px;
 }
 
 /* --- FORM --- */
-.register-form {
+.login-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
 }
 
 .form-group {
@@ -68,7 +67,7 @@
   color: var(--text-secondary);
 }
 
-.register-input {
+.login-input {
   width: 100%;
   padding: 14px 16px;
   border-radius: 8px;
@@ -80,13 +79,13 @@
   box-sizing: border-box;
 }
 
-.register-input:focus {
+.login-input:focus {
   outline: none;
   border-color: var(--accent-main);
   box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.15);
 }
 
-.register-input::placeholder {
+.login-input::placeholder {
   color: #6b7280;
 }
 
@@ -102,8 +101,8 @@
 }
 
 /* --- BUTTON --- */
-.register-button {
-  margin-top: 10px;
+.login-button {
+  margin-top: 8px;
   padding: 14px;
   background: linear-gradient(135deg, var(--accent-main), var(--accent-hover));
   color: white;
@@ -115,39 +114,39 @@
   transition: all 0.3s ease;
 }
 
-.register-button:hover:not(:disabled) {
+.login-button:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
 
-.register-button:disabled {
+.login-button:disabled {
   opacity: 0.7;
   cursor: not-allowed;
 }
 
 /* --- FOOTER --- */
-.register-footer {
-  margin-top: 28px;
+.login-footer {
+  margin-top: 32px;
   text-align: center;
   font-size: 14px;
   color: var(--text-secondary);
 }
 
-.register-link {
+.login-link {
   color: var(--accent-main);
   font-weight: 600;
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
-.register-link:hover {
+.login-link:hover {
   color: var(--accent-hover);
   text-decoration: underline;
 }
 
 /* --- RESPONSIVE --- */
 @media (max-width: 480px) {
-  .register-card {
+  .login-card {
     padding: 40px 24px;
   }
 }

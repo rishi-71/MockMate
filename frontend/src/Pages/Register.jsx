@@ -1,91 +1,114 @@
 import { useState } from "react";
 import axios from "../api/axios";
 import { useNavigate, Link } from "react-router-dom";
-import "../styles/auth.css";
+import "../styles/register.css"; // Note the updated CSS import
 
-function Register() {
+const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
-  const handleRegister = async () => {
+  const handleRegister = async (e) => {
+    e.preventDefault(); // Prevents page reload
+    setError("");
 
-    if(!name || !email || !password){
-      alert("All fields are required");
+    if (!name || !email || !password) {
+      setError("All fields are required");
       return;
     }
 
-    try{
+    setIsLoading(true);
 
-      const res = await axios.post("/auth/register",{
+    try {
+      const res = await axios.post("/auth/register", {
         name,
         email,
-        password
+        password,
       });
 
-      alert(res.data.message || "Registration successful");
-
+      // Optionally show a success message before redirecting
       navigate("/login");
-
-    }
-    catch(err){
-
+    } catch (err) {
       console.log(err);
-
-      if(err.response?.data?.message){
-        alert(err.response.data.message);
+      if (err.response?.data?.message) {
+        setError(err.response.data.message);
+      } else {
+        setError("Registration failed. Please try again.");
       }
-      else{
-        alert("Registration failed");
-      }
-
+    } finally {
+      setIsLoading(false);
     }
-
   };
 
   return (
-
-    <div className="auth-wrapper">
-
-      <div className="card auth-card register-card">
-
-        <h2 className="title">Create Account</h2>
-
-        <div className="form-group">
-
-          <input
-            className="input"
-            placeholder="Name"
-            onChange={(e)=>setName(e.target.value)}
-          />
-
-          <input
-            className="input"
-            placeholder="Email"
-            onChange={(e)=>setEmail(e.target.value)}
-          />
-
-          <input
-            className="input"
-            type="password"
-            placeholder="Password"
-            onChange={(e)=>setPassword(e.target.value)}
-          />
-
+    <div className="register-container">
+      <div className="register-card">
+        
+        <div className="register-header">
+          <div className="logo mockmate-logo">MockMate</div>
+          <h2>Create Account</h2>
+          <p>Join thousands of students practicing daily.</p>
         </div>
 
-        <button className="btn" onClick={handleRegister}>
-          Register
-        </button>
+        <form onSubmit={handleRegister} className="register-form">
+          {error && <div className="error-message">{error}</div>}
 
-        <p>
-          Already have an account? <Link to="/login">Login</Link>
-        </p>
+          <div className="form-group">
+            <label htmlFor="name">Full Name</label>
+            <input
+              id="name"
+              className="register-input"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Enter your name"
+              autoComplete="name"
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="email">Email Address</label>
+            <input
+              id="email"
+              className="register-input"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+              autoComplete="email"
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              id="password"
+              className="register-input"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Create a password"
+              autoComplete="new-password"
+            />
+          </div>
+
+          <button type="submit" className="register-button" disabled={isLoading}>
+            {isLoading ? "Creating Account..." : "Register"}
+          </button>
+        </form>
+
+        <div className="register-footer">
+          <p>
+            Already have an account? <Link to="/login" className="register-link">Log in</Link>
+          </p>
+        </div>
+
       </div>
     </div>
-
   );
 };
 
