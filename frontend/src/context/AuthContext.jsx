@@ -35,6 +35,7 @@ export const AuthProvider = ({ children }) => {
   const login = (userData) => {
     setUser(userData.user); // Assuming your backend sends { token: "...", user: { name: "...", email: "..." } }
     localStorage.setItem("user", JSON.stringify(userData.user));
+    
   };
 
   const logout = () => {

@@ -10,7 +10,7 @@ const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const {theme,toggleTheme}=useContext(ThemeContext);
+  const { theme, toggleTheme } = useContext(ThemeContext);
 
   const handleLogout = () => {
     logout();
@@ -34,17 +34,28 @@ const Navbar = () => {
 
         {user && <span className="user-name">{user.name}</span>}
 
+        {user?.role === "admin" && (
+
+<span
+className="nav-link"
+onClick={()=>navigate("/admin/dashboard")}
+>
+
+Admin
+
+</span>
+
+)}
+
         <button className="btn btn-secondary" onClick={handleLogout}>
           Logout
         </button>
-        <button
-className="theme-toggle"
-onClick={toggleTheme}
->
+        
 
-{theme === "dark" ? "🌙 Dark" : "☀ Light"}
 
-</button>
+        <button className="theme-toggle" onClick={toggleTheme}>
+          {theme === "dark" ? "🌙 Dark" : "☀ Light"}
+        </button>
       </div>
     </div>
   );
