@@ -32,7 +32,11 @@ const Login = () => {
 
       localStorage.setItem("token", res.data.token);
       login(res.data);
-      navigate("/dashboard");
+      if (res.data.user.role === "admin") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/dashboard");
+      }
     } catch (err) {
       console.log(err);
       if (err.response?.data?.message) {

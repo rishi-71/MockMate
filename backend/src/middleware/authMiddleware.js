@@ -26,3 +26,14 @@ res.status(401).json({message:"Token invalid"});
 }
 
 };
+
+// This assumes you already have a middleware that verifies the JWT 
+// and attaches the user info to req.user
+
+export const isAdmin = (req, res, next) => {
+  if (req.user && req.user.role === "admin") {
+    next(); 
+  } else {
+    res.status(403).json({ message: "Access denied. Admin privileges required." });
+  }
+};
