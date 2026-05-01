@@ -112,7 +112,7 @@ const Result = () => {
 
                       return (
                         <tr key={i}>
-                          <td className="problem-name">Generated Quiz #{quizResults.length - i}</td>
+                          <td className="problem-name">{q.topic ? q.topic : `Generated Quiz #{quizResults.length - i}`}</td>
                           <td className="monospace-text">{q.score} / {q.total}</td>
                           <td>
                             <span className={`accuracy-pill ${scoreClass}`}>

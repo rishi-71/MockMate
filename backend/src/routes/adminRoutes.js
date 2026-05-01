@@ -16,8 +16,8 @@ const router = express.Router();
 // 2. Changed verifyToken to protect here as well 👇
 router.get("/stats", protect, isAdmin, async (req, res) => {
   try {
-    // Count how many users have the role of "student"
-    const totalUsers = await User.countDocuments({ role: "student" });
+    // Count how many users have the role of "user"
+    const totalUsers = await User.countDocuments({ role: "user" });
     
     // Count total quizzes and coding problems solved
     const totalQuizzes = await QuizResult.countDocuments();

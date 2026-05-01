@@ -7,6 +7,11 @@ const quizResultSchema = new mongoose.Schema({
     required: true
   },
 
+  topic: {
+    type: String,
+    default: "Custom Theory Quiz"
+  },
+
   questions: [
     {
       question: String,

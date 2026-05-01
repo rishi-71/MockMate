@@ -11,6 +11,7 @@ const TheoryQuiz = () => {
   const [result, setResult] = useState(null);
   const [difficulty, setDifficulty] = useState("Medium");
   const [loading, setLoading] = useState(false);
+  const [quizTopic, setQuizTopic] = useState("");
 
   const token = localStorage.getItem("token");
 
@@ -29,10 +30,19 @@ const TheoryQuiz = () => {
         formData.append("file", file);
         formData.append("difficulty", difficulty);
 
+        console.log("State File:",file);
+        console.log("FormData File:",formData.get("file"));
+
         const res = await axios.post("/theory/generate-file", formData, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data"
+         }
+         
         });
+
+        console.log("ai response: ", res.data);
         setQuestions(res.data.questions);
+        setQuizTopic(res.data.topic || "Custom Theory Quiz");
       } else {
         // Handle Text Generation
         const res = await axios.post(
@@ -106,7 +116,8 @@ const submitQuiz = async () => {
     try {
       const res = await axios.post(
         "/theory/submit",
-        { questions: formatted },
+        { topic: quizTopic,
+          questions: formatted },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -120,7 +131,8 @@ const submitQuiz = async () => {
       
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
-      console.error(err);
+      console.error("Full Error:", err.response?.data || err.message);
+      alert(err.response?.data?.message || "Failed to submit quiz. Please try again.");
     } finally {
       setLoading(false);
     }

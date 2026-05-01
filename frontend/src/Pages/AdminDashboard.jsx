@@ -27,7 +27,7 @@ const AdminDashboard = () => {
         const res = await axios.get("/admin/stats", {
           headers: { Authorization: `Bearer ${token}` }
         });
-        
+         console.log("admin stats :",res.data);
         setStats({
           totalUsers: res.data.totalUsers || 0,
           totalCoding: res.data.totalCoding || 0,

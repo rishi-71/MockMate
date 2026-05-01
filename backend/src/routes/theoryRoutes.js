@@ -1,6 +1,9 @@
 import express from "express";
 import upload from "../middleware/upload.js";
 import { generateQuizFromFile } from "../controllers/theoryController.js";
+import multer from "multer";
+
+//const upload = multer({storage: multer.memoryStorage()});
 
 import {
   generateQuiz,
