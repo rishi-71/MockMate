@@ -4,7 +4,7 @@ import QuizResult from "../models/QuizResult.js";
 
 export const generateQuiz = async (req, res) => {
   try {
-    const { syllabus,difficulty } = req.body;
+    const { syllabus, difficulty } = req.body;
 
     const prompt = `
 You are an expert educator. Generate exactly 5 Multiple Choice Questions (MCQs) from this syllabus.
@@ -15,7 +15,7 @@ CRITICAL INSTRUCTION - DIFFICULTY LEVEL: ${difficulty.toUpperCase()}
 - If HARD: Focus on complex scenarios and trick questions.
 
 Syllabus Text:
-${syllabusText}
+${syllabus}
 
 Return STRICT JSON ONLY following this exact structure:
 {
@@ -30,8 +30,9 @@ Return STRICT JSON ONLY following this exact structure:
 }
 `;
 
+    // 1. UPDATED TO v1beta TO PREVENT 404 ERRORS
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -43,13 +44,26 @@ Return STRICT JSON ONLY following this exact structure:
 
     const data = await response.json();
 
-    const text = data.candidates[0].content.parts[0].text;
+    // 2. SAFETY CHECK
+    if (!response.ok || !data.candidates) {
+      console.error("Gemini API Error:", data);
+      return res.status(500).json({ message: "AI failed to generate content." });
+    }
 
+    let text = data.candidates[0].content.parts[0].text;
+
+    // 3. CLEAN MARKDOWN (Just like the file upload version)
+    text = text.replace(/```json/g, "").replace(/```/g, "").trim();
+    
     const jsonStart = text.indexOf("{");
     const jsonEnd = text.lastIndexOf("}") + 1;
 
-    const cleanJson = text.slice(jsonStart, jsonEnd);
+    if (jsonStart === -1 || jsonEnd === 0) {
+       console.error("Failed to parse JSON from AI response:", text);
+       return res.status(500).json({ message: "AI returned invalid format." });
+    }
 
+    const cleanJson = text.slice(jsonStart, jsonEnd);
     const quiz = JSON.parse(cleanJson);
 
     res.json(quiz);
