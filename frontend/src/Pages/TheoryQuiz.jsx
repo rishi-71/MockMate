@@ -51,6 +51,7 @@ const TheoryQuiz = () => {
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setQuestions(res.data.questions);
+        setQuizTopic(res.data.topic || "Custom Theory Quiz");
       }
       setAnswers({});
     } catch (err) {
@@ -263,7 +264,7 @@ const submitQuiz = async () => {
         <div className="quiz-panel">
           
           <div className="quiz-header">
-            <h3>Custom Quiz ({difficulty})</h3>
+            <h3>{quizTopic || "Custom Quiz"} ({difficulty})</h3>
             <span>{questions.length} Questions</span>
           </div>
 
