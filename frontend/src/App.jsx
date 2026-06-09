@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import PageWrapper from "./components/PageWrapper";
-import Navbar from "./Components/Navbar"; // Ensure your folder casing matches
+import Navbar from "./components/Navbar"; // Ensure your folder casing matches
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
 import Dashboard from "./Pages/Dashboard";
