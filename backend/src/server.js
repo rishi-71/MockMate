@@ -15,11 +15,14 @@ import adminRoutes from "./routes/adminRoutes.js";
 const app = express();
 
 // middleware
+
+app.use(express.json());
+
 app.use(cors({
-  origin: '*',
+  origin: ['https://mockmate-frontend-weld.vercel.app'],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true
 }));
-app.use(express.json());
 //app.use("/api/theory",theoryRoutes);
 app.use("/api/auth",authRoutes);
 //app.use("/api/coding",codingRoutes);
