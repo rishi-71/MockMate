@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 import axios from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
-import "../styles/login.css"; // Ensure this matches your CSS file name
+import "../styles/Login.css"; // Ensure this matches your CSS file name
 
 const Login = () => {
   const [email, setEmail] = useState("");
