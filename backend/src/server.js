@@ -15,7 +15,10 @@ import adminRoutes from "./routes/adminRoutes.js";
 const app = express();
 
 // middleware
-app.use(cors());
+app.use(cors({
+  origin: '*',
+  credentials: true
+}));
 app.use(express.json());
 //app.use("/api/theory",theoryRoutes);
 app.use("/api/auth",authRoutes);
