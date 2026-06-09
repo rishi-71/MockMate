@@ -23,6 +23,8 @@ app.use(cors({
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true
 }));
+
+app.options('*',cors());
 //app.use("/api/theory",theoryRoutes);
 app.use("/api/auth",authRoutes);
 //app.use("/api/coding",codingRoutes);
