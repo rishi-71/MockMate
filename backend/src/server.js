@@ -24,7 +24,7 @@ app.use(cors({
   credentials: true
 }));
 
-app.options('*',cors());
+
 //app.use("/api/theory",theoryRoutes);
 app.use("/api/auth",authRoutes);
 //app.use("/api/coding",codingRoutes);
@@ -40,9 +40,12 @@ app.use("/api", resultRoutes);
 
 // test route
 
-
+console.log("MONGO: ", process.env.MONGO_URI);
+console.log("JWT:", process.env.JWT_SECRET);
 // connect database
-connectDB();
+connectDB().catch(err => {
+  console.log("DB ERROR:", err);
+});
 
 // start server
 const PORT = 5000;
