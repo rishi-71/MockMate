@@ -33,7 +33,7 @@ const TheoryQuiz = () => {
         console.log("State File:",file);
         console.log("FormData File:",formData.get("file"));
 
-        const res = await axios.post("/theory/generate-file", formData, {
+        const res = await axios.post("git /theory/generate-file", formData, {
           headers: { Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data"
          }

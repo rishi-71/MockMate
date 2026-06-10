@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://mockmate-backend-rose.vercel.app",
+  baseURL: "https://mockmate-backend-rose.vercel.app/api",
   headers: {
     "Content-Type": "application/json"
   }
