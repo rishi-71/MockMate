@@ -39,9 +39,7 @@ app.use("/api/coding", codingRoutes);
 app.use("/api", resultRoutes);
 
 // test route
-app.get("/", (req, res) => {
-  res.send("MockMate Backend Running");
-});
+
 
 // connect database
 connectDB();
@@ -53,7 +51,10 @@ const PORT = 5000;
 //   console.log(`Server started on port ${PORT}`);
 // });
 
-export default app;
+app.get("/", (req, res) => {
+  res.send("MockMate Backend Running");
+});
 
 // optional debug
 console.log("Gemini Key:", process.env.GEMINI_API_KEY);
+export default app;
