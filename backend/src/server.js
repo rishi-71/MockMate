@@ -49,9 +49,11 @@ connectDB();
 // start server
 const PORT = 5000;
 
-app.listen(PORT, () => {
-  console.log(`Server started on port ${PORT}`);
-});
+// app.listen(PORT, () => {
+//   console.log(`Server started on port ${PORT}`);
+// });
+
+export default app;
 
 // optional debug
 console.log("Gemini Key:", process.env.GEMINI_API_KEY);
