@@ -24,7 +24,7 @@ const Register = () => {
     setIsLoading(true);
 
     try {
-      const res = await api.post("/auth/register", {
+      const res = await api.post("/api/auth/register", {
         name,
         email,
         password,
