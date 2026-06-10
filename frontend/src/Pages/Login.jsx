@@ -1,8 +1,9 @@
 import { useState, useContext } from "react";
-import axios from "../api/axios";
+import api from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import "../styles/Login.css"; // Ensure this matches your CSS file name
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -25,7 +26,7 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const res = await axios.post("/auth/login", {
+      const res = await api.post("/auth/login", {
         email,
         password,
       });
