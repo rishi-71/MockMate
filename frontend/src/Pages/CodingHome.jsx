@@ -17,8 +17,11 @@ export default function CodingHome() {
   const fetchTopics = async () => {
     try {
       const res = await axios.get("/coding/topics");
+      console.log("Topics response", res.data);
       setTopics(res.data);
     } catch (err) {
+      console.log("Topics error: ",err.response?.data);
+      console.log("Status:", err.response?.status);
       console.error(err);
     }
   };
