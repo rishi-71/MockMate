@@ -6,6 +6,8 @@ import CodingResult from "../models/CodingResult.js";
 
 
 export const getTopics = async (req,res) =>{
+    const count = await Topic.countDocuments();
+    console.log("Topics count: ", count);
     const topics = await Topic.find();
     res.json(topics);
 };
