@@ -5,10 +5,18 @@ import Result from "../models/Result.js";
 import CodingResult from "../models/CodingResult.js";
 
 
-export const getTopics = async (req,res) =>{
+import mongoose from "mongoose";
+
+export const getTopics = async (req,res) => {
+
+    console.log("DB NAME:", mongoose.connection.name);
+
     const count = await Topic.countDocuments();
-    console.log("Topics count: ", count);
+
+    console.log("TOPIC COUNT:", count);
+
     const topics = await Topic.find();
+
     res.json(topics);
 };
 
