@@ -19,7 +19,7 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-  origin: ['https://mockmate-frontend-weld.vercel.app'],
+  origin: "*",
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true
 }));
@@ -48,11 +48,11 @@ connectDB().catch(err => {
 });
 
 // start server
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
-// app.listen(PORT, () => {
-//   console.log(`Server started on port ${PORT}`);
-// });
+ app.listen(PORT, () => {
+   console.log(`Server started on port ${PORT}`);
+ });
 
 app.get("/", (req, res) => {
   res.send("MockMate Backend Running");
